@@ -1,4 +1,4 @@
-# PraatVSCode (v0.8.0)
+# PraatVSCode (v0.7.6)
 
 ## 1. Summary
 
