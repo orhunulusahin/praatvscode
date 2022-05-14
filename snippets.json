@@ -1,0 +1,36 @@
+{
+    "For loop": {
+        "prefix": "for",
+        "body": [
+            "for ${1:numeric} from ${2:numeric} to ${3:numeric}",
+            "\t${4:# code...}",
+            "endfor"
+        ],
+        "description": "A for loop in Praat"
+    },
+    "While loop": {
+        "prefix": "while",
+        "body": [
+            "while ${1:condition}",
+            "\t${2:# code...}",
+            "endwhile"
+        ],
+        "description": "A while loop in Praat"
+    },
+    "Repeat loop": {
+        "prefix": "repeat",
+        "body": [
+            "repeat",
+            "\t${2:# code...}",
+            "until ${1:condition}"
+        ],
+        "description": "A repeat-until loop in Praat"
+    },
+    "Read from file": {
+        "prefix": "Read from file",
+        "body": [
+            "Read from file... ${0:file name}"
+        ],
+        "description": "Open a compatible file with Praat"
+    }
+}

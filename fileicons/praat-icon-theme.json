@@ -1,0 +1,13 @@
+{
+    "iconDefinitions": {
+        "_praat_icon": {
+            "iconPath": "./images/praat_16x16.png"
+        }
+    },
+    "fileExtensions": {
+      "praat": "_praat_icon"
+    },
+    "languageIds": {
+      "praat": "_praat_icon"
+    }
+  }

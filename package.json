@@ -1,0 +1,142 @@
+{
+	"name": "praatvscode",
+	"displayName": "PraatVSCode",
+	"description": "A Praat extension for Visual Studio Code.",
+	"icon": "images/praat_128x128.png",
+	"publisher": "OrhunUlusahin",
+	"author": {
+	  "name": "Orhun Ulusahin"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/orhunulusahin/praatvscode.git"
+		},
+	"version": "0.7.6",
+	"engines": {
+		"vscode": "^1.64.0"
+	},
+	"categories": [
+		"Programming Languages", "Snippets", "Formatters"
+	],
+	"keywords": [
+		"praat", "phonetics", "phonology"
+	],
+	"activationEvents": [
+		"onLanguage:praat",
+		"onLanguage:textgrid"
+	],
+	"main": "./out/extension.js",
+	"license": "SEE LICENSE IN LICENSE",
+	"contributes": {
+		"languages": [
+			{
+			  "id": "praat",
+			  "icon": {
+				"light": "./images/praat_32x32.png",
+				"dark": "./images/praat_32x32.png"
+			  },
+			  "extensions": [
+				".praat"
+			  ],
+			  "aliases": [
+				"Praat","pra"
+			  ],
+			  "configuration": "./praat-language-configuration.json"
+			},
+			{
+			"id": "textgrid",
+			  "icon": {
+				"light": "./images/praat_32x32.png",
+				"dark": "./images/praat_32x32.png"
+			  },
+			  "extensions": [
+				".textgrid"
+			  ],
+			  "aliases": [
+				"TextGRID","textGRID","TextGrid","textGrid"
+			  ],
+			  "configuration": "./textgrid-language-configuration.json"
+			}
+		],
+		"grammars": [
+		  {
+			"language": "praat",
+			"scopeName": "source.praat",
+			"path": "./syntaxes/praat.tmGrammar.json"
+		  },
+		  {
+			"language": "textgrid",
+			"scopeName": "source.textgrid",
+			"path": "./syntaxes/textgrid.tmGrammar.json"
+		  }
+		],
+		"commands": [
+			{
+				"command": "praatvscode.helloWorld",
+				"title": "Hello World"
+			},
+			{
+				"command": "praatvscode.definePath",
+				"title": "Define a path for the Praat executable"
+			},
+			{
+				"command": "praatvscode.getPath",
+				"title": "Show the current path for the Praat executable"
+			},
+			{
+				"command": "praatvscode.curFile",
+				"title": "Show the path for the active file"
+			},
+			{
+				"command": "praatvscode.runScript",
+				"title": "Run the current script in the background using Praat"
+			},
+			{
+				"command": "praatvscode.openInPraat",
+				"title": "Open the current script in Praat (with GUI)"
+			},
+			{
+				"command": "praatvscode.runInPraat",
+				"title": "Run the current script in Praat (with GUI)"
+			}
+		],
+		"configuration": {
+			"title": "PraatVSCode",
+			"properties": {
+				"praatvscode.praatpath": {
+				"type": "string",
+				"default": "",
+				"scope": "machine",
+				"description": "Enter the path for the Praat executable here to run Praat scripts through VSCode."
+				}
+			}
+		},
+		"snippets": [
+			{
+			  "language": "praat",
+			  "path": "./snippets.json"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.64.0",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.0.0",
+		"@types/node": "14.x",
+		"@typescript-eslint/eslint-plugin": "^5.9.1",
+		"@typescript-eslint/parser": "^5.9.1",
+		"eslint": "^8.6.0",
+		"glob": "^7.2.0",
+		"mocha": "^9.1.3",
+		"typescript": "^4.5.4",
+		"@vscode/test-electron": "^2.0.3"
+	}
+}
