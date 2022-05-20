@@ -74,6 +74,39 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	// Get user's Praat version
+	registerCommandNice('praatvscode.getPraatVersion', () => {
+		if (praatPath === undefined) {
+			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+		} else {
+			if (os.type() === 'Windows_NT') { // Gate check
+				cp.exec(praatPath +'\\Praat.exe --version', (error, stdout, stderr) => {
+					if (error) {
+						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
+					} else {
+						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+					}
+				});
+			} else if (os.type() === 'Linux') { // Penguin check
+				cp.exec(praatPath +'/praat --version', (error, stdout, stderr) => {
+					if (error) {
+						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
+					} else {
+						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+				}});
+			} else if (os.type() === 'Darwin') { // Steve check
+				cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --version', (error, stdout, stderr) => {
+					if (error) {
+						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
+					} else {
+						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+				}});
+			} else {
+				vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
+			}
+		}
+	});
+
 	// Major feature!! Let user run Praat code without ever opening Praat
 	// This uses VSCode's terminal interactions to run Praat in the background
 

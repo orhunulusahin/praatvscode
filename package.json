@@ -98,6 +98,10 @@
 			{
 				"command": "praatvscode.runInPraat",
 				"title": "Run the current script in Praat (with GUI)"
+			},
+			{
+				"command": "praatvscode.getPraatVersion",
+				"title": "Get version info from Praat"
 			}
 		],
 		"configuration": {

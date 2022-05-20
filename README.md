@@ -17,7 +17,7 @@ PraatVSCode:
 
 The syntax highlighting and QoL features address the limitations of the native Praat editor. Support for VScode allows users to integrate Praat scripts into development environments that are likely to contain other scripts written in other langauges. PraatVSCode also gives users the ability to run scripts without opening a Praat window while still providing a Praat output console within VSCode (although users can also call the Praat GUI with a single button if needed), speeding up workflow even more.
 
-Praat is an open-source program for doing phonetics by computer. You can find out more at the [Praat repository](https://github.com/praat/praat).
+Praat is an open-source program for doing phonetics by computer. It's developed and maintained by Paul Boersma and David Weenink. You can find out more at the [Praat repository](https://github.com/praat/praat) or the [Praat website](https://www.fon.hum.uva.nl/praat/).
 
 Visual Studio Code is an (almost entirely but not quite) open-source code editor developed by Microsoft. You can find out more at the [VSCode repository](https://github.com/microsoft/vscode). This extension is fully dependent on VSCode and the production version can be installed through the built-in VSCode exetension marketplace (at no cost). Click [here] to install PraatVSCode.
 
