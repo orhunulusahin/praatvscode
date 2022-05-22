@@ -74,6 +74,9 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	// Fix for weird unicode characters in terminal output readouts
+	const outputReplace:any = /[^a-zA-Z0-9!?.:;\n{}\[\] ]/g;	
+
 	// Get user's Praat version
 	registerCommandNice('praatvscode.getPraatVersion', () => {
 		if (praatPath === undefined) {
@@ -84,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 					if (error) {
 						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
 					} else {
-						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(outputReplace,  ""));
 					}
 				});
 			} else if (os.type() === 'Linux') { // Penguin check
@@ -92,20 +95,23 @@ export function activate(context: vscode.ExtensionContext) {
 					if (error) {
 						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
 					} else {
-						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(outputReplace, ""));
 				}});
 			} else if (os.type() === 'Darwin') { // Steve check
 				cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --version', (error, stdout, stderr) => {
 					if (error) {
 						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
 					} else {
-						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(outputReplace, ""));
 				}});
 			} else {
 				vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
 			}
 		}
 	});
+
+	// Create an output window to emulate Praat's
+	let praatOut = vscode.window.createOutputChannel("Script Output (From Praat)");
 
 	// Major feature!! Let user run Praat code without ever opening Praat
 	// This uses VSCode's terminal interactions to run Praat in the background
@@ -120,12 +126,11 @@ export function activate(context: vscode.ExtensionContext) {
 				if (os.type() === 'Windows_NT') { // Gate check
 					cp.exec(praatPath +'\\Praat.exe --run ' + vscode.window.activeTextEditor?.document.uri.fsPath, (error, stdout, stderr) => {
 						vscode.window.showInformationMessage('Running command: ' + praatPath +'\\Praat.exe --run ' + vscode.window.activeTextEditor?.document.uri.fsPath);
-						let praatOut = vscode.window.createOutputChannel("Script Output (From Praat)");
 						praatOut.show();
 						if (error) {
-							praatOut.appendLine('The script did not run.\nPraat sent: ' + error);
+							praatOut.appendLine('The script did not run.\nPraat sent:\n' + error);
 						} else {
-							praatOut.appendLine('The script ran nominally.\nPraat sent: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, "") + ' ' + stderr.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+							praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + stdout.replace(outputReplace, "") + ' ' + stderr.replace(outputReplace, ""));
 						}
 					});
 				} else if (os.type() === 'Linux') { // Penguin check
@@ -134,9 +139,9 @@ export function activate(context: vscode.ExtensionContext) {
 						let praatOut = vscode.window.createOutputChannel("Script Output (From Praat)");
 						praatOut.show();
 						if (error) {
-							praatOut.appendLine('The script did not run.\nPraat sent: ' + error);
+							praatOut.appendLine('The script did not run.\nPraat sent:\n' + error);
 						} else {
-							praatOut.appendLine('The script ran nominally.\nPraat sent: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, "") + ' ' + stderr.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+							praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + stdout.replace(outputReplace, "") + ' ' + stderr.replace(outputReplace, ""));
 						}
 					});
 				} else if (os.type() === 'Darwin') { // Steve check
@@ -145,9 +150,9 @@ export function activate(context: vscode.ExtensionContext) {
 						let praatOut = vscode.window.createOutputChannel("Script Output (From Praat)");
 						praatOut.show();
 						if (error) {
-							praatOut.appendLine('The script did not run.\nPraat sent: ' + error);
+							praatOut.appendLine('The script did not run.\nPraat sent:\n' + error);
 						} else {
-							praatOut.appendLine('The script ran nominally.\nPraat sent: ' + stdout.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, "") + ' ' + stderr.replace(/[^a-zA-Z0-9!?{}\[\] ]/g, ""));
+							praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + stdout.replace(outputReplace, "") + ' ' + stderr.replace(outputReplace, ""));
 						}
 					});
 				} else {

@@ -205,7 +205,7 @@
     "console": {
       "patterns":[
         {
-          "march": "\\b(write|append)((Info|File)(Line)?)\\b",
+          "match": "\\b(write|append)((Info|File)(Line)?)\\b",
           "captures": {
             "1": { "name": "support.function.praat" },
             "2": { "name": "keyword.variable.language.praat" }
