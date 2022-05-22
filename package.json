@@ -11,7 +11,7 @@
 		"type": "git",
 		"url": "https://github.com/orhunulusahin/praatvscode.git"
 		},
-	"version": "0.7.6",
+	"version": "0.8.0",
 	"engines": {
 		"vscode": "^1.64.0"
 	},

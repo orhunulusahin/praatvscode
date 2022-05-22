@@ -11,6 +11,7 @@ PraatVSCode:
 - Registers Praat as a valid programming language for VSCode
 - Marks Praat files with appropriate icons
 - Does syntax highlighting
+- Provides autocompletion suggestions/search
 - Provides an array of snippets for *code that writes itself*
 
 ...alongside a long list of quality of life improvements.
