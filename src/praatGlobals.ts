@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface IEntry { description?: string; signature?: string }
 export interface IEntries { [name: string]: IEntry }
 

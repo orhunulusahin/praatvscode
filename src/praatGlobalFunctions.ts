@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // Praat global function list A
 
 import { IEntries } from './PraatGlobals';
