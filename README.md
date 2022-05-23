@@ -1,8 +1,8 @@
-# PraatVSCode (v0.7.6)
+# PraatVSCode (v0.8.0)
 
 ## 1. Summary
 
-    ⚠️Version 0.7.6 is a test version of PraatVSCode!⚠️
+    ⚠️Version 0.8.0 is a public test version of PraatVSCode!⚠️
 
 PraatVSCode is an open-source Visual Studio Code extension for Praat users. Its primary aim is to address the shortcomings of the native Praat code editor, which is a plain text editor with a *Run* button.
 
@@ -36,7 +36,9 @@ And here's the same code with PraatVSCode:
 
 ![syntax_after](/assets/syntax_after.png)
 
-At a glance, the user knows what is a string, what is a comment, what is a function, what type of variable went into what function, etc. Where applicable, highlighting is also specific to *existing* Praat keywords. This means that, for instance, the extension will not highlight everything followed by an ellipsis or a colon as a function. Instead, functions will only be highlighted when the spelling (including case) is correct. So, "get number of Strings" will not highlighted but "Get number of strings" will, to help with Praat's case-sensitivity. PraatVSCode does not impose its own color theme but simply uses the user-selected VSCode theme.
+At a glance, the user knows what is a string, what is a comment, what is a function, what type of variable went into what function, etc. Where applicable, highlighting is also specific to *existing* Praat keywords. This means that, for instance, the extension will not highlight everything followed by an ellipsis or a colon as a function. Instead, functions will only be highlighted when the spelling (including case) is correct. So, "get number of Strings" will not be highlighted but "Get number of strings" will, to help with Praat's case-sensitivity.
+
+Note: PraatVSCode does not impose its own color theme but simply uses the user-selected VSCode theme.
 
 As of version 0.7.3, the extension provides highlighting and QoL features for TextGrid files as well.
 
@@ -71,7 +73,19 @@ This command, which is also accessible by the button described above, runs the a
 
 Users can open scripts in Praat through the extension, optionally running them as well. These commands are particularly useful when the user requires the Praat GUI to make manual checks or adjustments. These commands rely on the VSCode-Command Line-Praat interaction and use the "--send" function which was introduced in Praat 6.2. Thus, users will only be able to "send" their scripts to Praat versions 6.2 and above.
 
-## 3. Contributing & License
+### 2.3 Autocompletion
+
+![autocompletion](/assets/autocompletion.png)
+
+PraatVSCode will suggest autocompletion items as the user types. Currently, the items are indexed only alphabettically and none take priority over others. However, in future versions, relevant suggestions (e.g., a numeric function for a formula instead of a string function) may be prioritized.
+
+### 2.4 Hover Info
+
+![hoverinfo](/assets/hoverinfo.png)
+
+Hovering on a symbol recognized as a keyword will display relevant information to the user. This relevant information can include the type of symbol, the syntax and input types for a function, descriptions of symbols and more.
+
+## 3. License & Contributing
 
 PraatVSCode is licensed under the MIT license. You can use, modify, and distribute it freely. Open-source publication of modifications is encouraged but not mandatory. For more information, see [LICENSE](/LICENSE).
 

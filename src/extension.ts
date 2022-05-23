@@ -59,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Praat path set as: '+ promptPath);
 		// Little easter egg for the true ones
 		if (promptPath?.includes('desktop') || promptPath?.includes('Desktop')) {
-			vscode.window.showInformationMessage('Praat on the desktop... you are a true phonologist!');
+			vscode.window.showInformationMessage('Praat on the desktop... you are a true phonetician!');
 		}
 		// Push to global context
 		await context.globalState.update('praatpath', promptPath);
