@@ -1,19 +1,34 @@
+import { SnippetString } from "vscode";
+
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface IEntry { description?: string; signature?: string }
+export interface IEntry { description?: string; signature?: string; preSnippet?: string; niceName?: string}
 export interface IEntries { [name: string]: IEntry }
 
 export const globalvariables: IEntries = {
+	read_from_file: {
+		description: 'Read a file in Praat',
+		signature: '( Read from file... ( string filename$ ) ): object',
+		preSnippet: 'Read from file... ${0:filename}',
+		niceName: 'Read from file'
+	},
+	// testing some stuff
+	flip_a_table: {
+		description: 'Flip a table in Praat',
+		signature: '( Flip a table... filename$ ): table',
+		preSnippet: 'Flip a table... ${0:tablename}',
+		niceName: 'Read from file'
+	}
 };
 export const compiletimeconstants: IEntries = {
 };
 export const keywords: IEntries = {
 	procedure: {
 		description: 'Defines a custom function.',
-		signature: '( string $name (), mixed $value ): mixed'
+		signature: '( string name (), mixed code ): mixed'
 	},
 	exit: {
 		description: 'Terminates execution of the script and displays a message.',
-		signature: '( string $message ): string'
+		signature: '( string message ): string'
 	},
 	while: {
 	},

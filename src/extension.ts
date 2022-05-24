@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import PraatCompletionItemProvider from './completionItemProvider';
 import PraatHoverProvider from './HoverProvider';
+import PraatDocumentSymbolProvider from './variableRecognizer';
 
 // A semantic highlighter may be developed here after the syntax highlighter is sufficiently capable
 
@@ -251,6 +252,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('praat', new PraatCompletionItemProvider(), '>', '$'));
 	// Hover info
 	context.subscriptions.push(vscode.languages.registerHoverProvider('praat', new PraatHoverProvider()));
+	// Recognize user-defined variables
+	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider('praat', new PraatDocumentSymbolProvider()));
+	// Additional syntax highlighting for user defined variables
+	// context.subscriptions.push(vscode.languages.registerDocumentHighlightProvider('praat', new PraatUserHighlightProvider()));
 
 }
 

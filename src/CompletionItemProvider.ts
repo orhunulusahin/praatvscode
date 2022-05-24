@@ -1,6 +1,7 @@
-import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextDocument, Position, Range, TextEdit, workspace, CompletionContext } from 'vscode';
+import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextDocument, Position, Range, TextEdit, workspace, CompletionContext, SnippetString } from 'vscode';
 import praatGlobals = require('./praatGlobals');
 import praatGlobalFunctions = require('./praatGlobalFunctions');
+import * as vscode from 'vscode';
 
 export default class PraatCompletionItemProvider implements CompletionItemProvider {
 
@@ -31,11 +32,16 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			let proposal: CompletionItem = new CompletionItem(name);
 			proposal.kind = kind;
 			if (entry) {
+				let completeSnippet = new SnippetString(entry?.preSnippet);
 				if (entry.description) {
 					proposal.documentation = entry.description;
 				}
 				if (entry.signature) {
 					proposal.detail = entry.signature;
+				}
+				if (entry.preSnippet) {
+					// Always insert the full snippet with tab key interface
+					proposal.insertText = completeSnippet;
 				}
 			}
 			return proposal;
@@ -48,13 +54,6 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 		if (matches('praat') && range.start.character >= 2) {
 			let twoBeforePosition = new Position(range.start.line, range.start.character - 2);
 			let beforeWord = document.getText(new Range(twoBeforePosition, range.start));
-
-			if (beforeWord === '<?') {
-				let proposal = createNewProposal(CompletionItemKind.Class, '<?praat', null);
-				proposal.textEdit = new TextEdit(new Range(twoBeforePosition, position), '<?praat');
-				result.push(proposal);
-				return Promise.resolve(result);
-			}
 		}
 
 		for (let globalvariables in praatGlobals.globalvariables) {
@@ -83,6 +82,28 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 		}
 
 		let text = document.getText();
+
+		const beforeEqual = position.character + 2;
+
+		const followingCharacter = new Position(range.start.line, position.character + 1);
+		const secondFollowingCharacter = new Position(range.start.line, position.character + 2);
+		
+		if (document.getText(new Range(position,followingCharacter)).endsWith("=") || document.getText(new Range(position,secondFollowingCharacter)).endsWith("=")) {
+			let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s*)\=/g;
+			let match: RegExpExecArray | null = null;
+			while (match = variableMatch.exec(text)) {
+				let word = match[1];
+				if (!added[word]) {
+					vscode.window.showInformationMessage('something defined?' + match[1]);
+					added[word] = true;
+					result.push(createNewProposal(CompletionItemKind.Variable, word, null));
+				}
+			}
+		}
+
+		// // this is what PHP uses to recognize user-defined variables
+		// // will be adapted to Praat
+
 		if (prefix[0] === '$') {
 			let variableMatch = /\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/g;
 			let match: RegExpExecArray | null = null;
@@ -94,6 +115,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 				}
 			}
 		}
+
 		let functionMatch = /function\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\(/g;
 		let match2: RegExpExecArray | null = null;
 		while (match2 = functionMatch.exec(text)) {
