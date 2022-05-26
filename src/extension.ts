@@ -6,6 +6,8 @@ import * as cp from 'child_process';
 import PraatCompletionItemProvider from './completionItemProvider';
 import PraatHoverProvider from './HoverProvider';
 import PraatDocumentSymbolProvider from './variableRecognizer';
+import PraatSemanticHighlighter, { PraatLegend } from './SemanticTokensProvider';
+import PraatDefinitionProvider from './DefinitionProvider';
 
 // A semantic highlighter may be developed here after the syntax highlighter is sufficiently capable
 
@@ -123,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (praatPath === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
-			vscode.window.showErrorMessage('The current file is not a Praat script!');
+			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
 			if (vscode.window.activeTextEditor?.document.uri.fsPath !== undefined) {
 				if (os.type() === 'Windows_NT') { // Gate check
@@ -172,7 +174,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (praatPath === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
-			vscode.window.showErrorMessage('The current file is not a Praat script!');
+			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
 			if (vscode.window.activeTextEditor?.document.uri.fsPath !== undefined) {
 				if (os.type() === 'Windows_NT') {
@@ -200,7 +202,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (praatPath === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
-			vscode.window.showErrorMessage('The current file is not a Praat script!');
+			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
 			if (vscode.window.activeTextEditor?.document.uri.fsPath !== undefined) {
 				if (os.type() === 'Windows_NT') {
@@ -247,16 +249,17 @@ export function activate(context: vscode.ExtensionContext) {
 	// Run status bar stuff once when the extension activates
 	updatePathIndicator();
 
-	// Experimental features
+	// Experimental and/or fancy features
 	// Autocompletion
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('praat', new PraatCompletionItemProvider(), '>', '$'));
 	// Hover info
 	context.subscriptions.push(vscode.languages.registerHoverProvider('praat', new PraatHoverProvider()));
-	// Recognize user-defined variables
+	// Recognize user-defined symbols
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider('praat', new PraatDocumentSymbolProvider()));
-	// Additional syntax highlighting for user defined variables
-	// context.subscriptions.push(vscode.languages.registerDocumentHighlightProvider('praat', new PraatUserHighlightProvider()));
-
+	// Additional semantic highlighting for user defined variables
+	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider('praat', new PraatSemanticHighlighter(), new PraatLegend));
+	// Symbol declaration provider for user defined variables
+	context.subscriptions.push(vscode.languages.registerDefinitionProvider('praat', new PraatDefinitionProvider));
 }
 
 // this method is called when the extension is deactivated

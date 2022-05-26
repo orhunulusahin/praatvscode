@@ -1,7 +1,6 @@
-import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextDocument, Position, Range, TextEdit, workspace, CompletionContext, SnippetString } from 'vscode';
+import { CompletionItemProvider, window, CompletionItem, CompletionItemKind, CancellationToken, TextDocument, Position, Range, TextEdit, workspace, CompletionContext, SnippetString } from 'vscode';
 import praatGlobals = require('./praatGlobals');
 import praatGlobalFunctions = require('./praatGlobalFunctions');
-import * as vscode from 'vscode';
 
 export default class PraatCompletionItemProvider implements CompletionItemProvider {
 
@@ -81,42 +80,32 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			}
 		}
 
+		// Scan the document
 		let text = document.getText();
 
-		const beforeEqual = position.character + 2;
-
-		const followingCharacter = new Position(range.start.line, position.character + 1);
-		const secondFollowingCharacter = new Position(range.start.line, position.character + 2);
-		
-		if (document.getText(new Range(position,followingCharacter)).endsWith("=") || document.getText(new Range(position,secondFollowingCharacter)).endsWith("=")) {
-			let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s*)\=/g;
-			let match: RegExpExecArray | null = null;
-			while (match = variableMatch.exec(text)) {
-				let word = match[1];
-				if (!added[word]) {
-					vscode.window.showInformationMessage('something defined?' + match[1]);
-					added[word] = true;
-					result.push(createNewProposal(CompletionItemKind.Variable, word, null));
-				}
+		// const followingCharacter = new Position(range.start.line, position.character + 1);
+		// const secondFollowingCharacter = new Position(range.start.line, position.character + 2);
+	
+		// Find user-defined variables
+		let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s*)\=/g;
+		let match: RegExpExecArray | null = null;
+		while (match = variableMatch.exec(text)) {
+			let word:string;
+			if (match[0].endsWith(" =")) {
+				word = match[0].substring(0,match[0].length-2);
+			}
+			else {
+				word = match[0].substring(0,match[0].length-2);
+			}
+			if (!added[word]) {
+				added[word] = true;
+				// Offer user-defined variables as completion items
+				result.push(createNewProposal(CompletionItemKind.Variable, word, null));
 			}
 		}
 
-		// // this is what PHP uses to recognize user-defined variables
-		// // will be adapted to Praat
-
-		if (prefix[0] === '$') {
-			let variableMatch = /\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/g;
-			let match: RegExpExecArray | null = null;
-			while (match = variableMatch.exec(text)) {
-				let word = match[0];
-				if (!added[word]) {
-					added[word] = true;
-					result.push(createNewProposal(CompletionItemKind.Variable, word, null));
-				}
-			}
-		}
-
-		let functionMatch = /function\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\(/g;
+		// Now do user-defined functions (procedures in Praat)
+		let functionMatch = /procedure\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\(/g;
 		let match2: RegExpExecArray | null = null;
 		while (match2 = functionMatch.exec(text)) {
 			let word2 = match2[1];
@@ -125,6 +114,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 				result.push(createNewProposal(CompletionItemKind.Function, word2, null));
 			}
 		}
+
 		return Promise.resolve(result);
 	}
 }

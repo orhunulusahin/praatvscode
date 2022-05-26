@@ -4,13 +4,14 @@ import { TextDocument, Position, Range, TextEdit, Location, window, Cancellation
 
 export default class PraatDocumentSymbolProvider implements DocumentSymbolProvider {
     
-    public provideDocumentSymbols(document: TextDocument, _token: CancellationToken): ProviderResult<SymbolInformation[] | DocumentSymbol[]> {
+    public async provideDocumentSymbols(document: TextDocument, _token: CancellationToken): Promise<DocumentSymbol[] | SymbolInformation[] | null | undefined> {
         
         let result: DocumentSymbol[] = [];
-
-		let text = document.getText();
+        let symbolInfo: SymbolInformation[] = [];
 
         let added: any = {};
+
+        return new Promise((resolve, reject) => {
 
         // loop through the document and see if you find declared variables
         for (let i = 0; i < document.lineCount; i++) {
@@ -23,7 +24,12 @@ export default class PraatDocumentSymbolProvider implements DocumentSymbolProvid
 
                 let word = match[0].substring(0, match[0].length);
 
-                // remove possible matched space and equal sign
+                // If conditional, we're not interested
+                if (match[0].endsWith("==")) {
+                    continue;
+                }
+
+                // Remove possible matched space and equal sign
                 if (match[0].endsWith(" =")) {
                     word = match[0].substring(0, match[0].length-2);
                 } else {
@@ -33,10 +39,8 @@ export default class PraatDocumentSymbolProvider implements DocumentSymbolProvid
 				if (!added[word]) {
                     added[word] = true;
                     let symbolStart = new Position(line.lineNumber, 0);
-                    let symbolEnd = new Position(line.lineNumber, match[0].length-1);
+                    let symbolEnd = new Position(line.lineNumber, word.length-1);
                     let symbolRange = new Range(symbolStart, symbolEnd);
-                    // window.showErrorMessage();
-
                     // window.showInformationMessage(word + " defined at (" + symbolStart.line + "," + symbolStart.character + ") to (" + symbolEnd.line + "," + symbolEnd.character + ")");
                     result.push({
                         name: word,
@@ -46,13 +50,18 @@ export default class PraatDocumentSymbolProvider implements DocumentSymbolProvid
                         selectionRange: symbolRange,
                         children: []
                     });
-
+                    symbolInfo.push({
+                        name: word,
+                        containerName: word,
+                        kind: SymbolKind.Variable,
+                        location: new Location(document.uri, symbolRange)
+                    });
                     window.showInformationMessage(added);
+                    // resolve(result);
+                    resolve(symbolInfo);
                 }
             }
         }
-        
-        return Promise.resolve(result);
-
-    }
+        }
+    );}
 }

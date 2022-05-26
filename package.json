@@ -106,6 +106,10 @@
 			{
 				"command": "praatvscode.getPraatVersion",
 				"title": "Get version info from Praat"
+			},
+			{
+				"command": "editor.action.revealDefinition",
+				"title": "Go to this symbol's declaration"
 			}
 		],
 		"configuration": {
