@@ -9,8 +9,6 @@ import PraatDocumentSymbolProvider from './variableRecognizer';
 import PraatSemanticHighlighter, { PraatLegend } from './SemanticTokensProvider';
 import PraatDefinitionProvider from './DefinitionProvider';
 
-// A semantic highlighter may be developed here after the syntax highlighter is sufficiently capable
-
 export function activate(context: vscode.ExtensionContext) {
 
 	const os = require('os');
@@ -115,11 +113,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
-	// Create an output window to emulate Praat's
-	let praatOut = vscode.window.createOutputChannel("Script Output (From Praat)");
-
 	// Major feature!! Let user run Praat code without ever opening Praat
 	// This uses VSCode's terminal interactions to run Praat in the background
+	// Create an output window to emulate Praat's
+	let praatOut = vscode.window.createOutputChannel("Script Output (From Praat)");
 
 	registerCommandNice('praatvscode.runScript', () => {
 		if (praatPath === undefined) {

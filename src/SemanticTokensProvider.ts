@@ -1,4 +1,6 @@
-import { window, CancellationToken, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event } from 'vscode';
+import { match } from 'assert';
+import { info } from 'console';
+import { window, CancellationToken, commands, DocumentSymbolProvider, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, SymbolKind, Uri, SymbolInformation, Location, Range, Position } from 'vscode';
 
 interface IParsedToken {
 	line: number;
@@ -6,6 +8,17 @@ interface IParsedToken {
 	length: number;
 	tokenType: string;
 	tokenModifiers: string[];
+}
+
+interface PraatUserVariable {
+	name: string;
+	type?: string;
+	value?: any;
+}
+
+export class PraatLegend implements SemanticTokensLegend {
+	tokenTypes: string[] = tokenTypesLegend;
+	tokenModifiers: string[] = tokenModifiersLegend;
 }
 
 // Map the legend
@@ -25,32 +38,100 @@ const tokenModifiersLegend = [
 ];
 tokenModifiersLegend.forEach((tokenModifier, index) => tokenModifiers.set(tokenModifier, index));
 
-// Create legend to export to main
-export class PraatLegend implements SemanticTokensLegend {
-	tokenTypes: string[] = tokenTypesLegend;
-	tokenModifiers: string[] = tokenModifiersLegend;
-}
-
-interface PraatUserVariable {
-	name: string;
-	type?: string;
-	value: any;
-}
-
 export default class PraatSemanticHighlighter implements DocumentSemanticTokensProvider {
 
-    onDidChangeSemanticTokens?: Event<void> | undefined;
+    // onDidChangeSemanticTokens?: Event<void> | undefined;
 
     public async provideDocumentSemanticTokens(document: TextDocument, _token: CancellationToken): Promise<SemanticTokens | null | undefined> {
-		
-		const allTokens = this._parseText(document.getText());
+
+		var added: any = {};
+
+		const documentSymbols: SymbolInformation[] = await commands.executeCommand('vscode.executeDocumentSymbolProvider', document.uri);
+
+		// Gets all declarations
+		const allTokens = this._parseText(document);
 		const builder = new SemanticTokensBuilder();
 		allTokens.forEach((token) => {
 			builder.push(token.line, token.startCharacter, token.length, this._encodeTokenType(token.tokenType), this._encodeTokenModifiers(token.tokenModifiers));
 		});
+
+		// Highlight every call of every user-defined variable
+		let symbolDone: any = {};
+		const userCall: IParsedToken[] = [];
+		let orange = window.createOutputChannel("Orange");
+		const lines = document.getText().split(/\r\n|\r|\n/);
+
+		for (let i = 0; i < document.lineCount; i++) {
+			let line = lines[i];
+			documentSymbols.forEach(symbol => {
+				if (!symbolDone[symbol.name]) {
+					orange.appendLine('beep');
+					let symbolMatch = new RegExp(symbol.name);
+					let match: RegExpExecArray | null = null;;
+					if (line.indexOf("=") !== line.lastIndexOf("=")) {
+						orange.appendLine('boop');
+						while (match = symbolMatch.exec(line)) {
+							let word = match[0].trim();
+							userCall.push({
+								line: i,
+								startCharacter: line.indexOf(word),
+								length: word.length,
+								tokenType: 'variable',
+								tokenModifiers: []
+							});
+							orange.appendLine(word);
+						}
+					}
+					// window.showInformationMessage(match[0]);
+					// orange.appendLine(symbol.name + " " + symbol.location);
+				}
+				symbolDone[symbol.name] = true;
+			});		
+		};
+	
+		userCall.forEach((userVariable) => {
+			builder.push(userVariable.line, userVariable.startCharacter, userVariable.length, this._encodeTokenType(userVariable.tokenType), this._encodeTokenModifiers(userVariable.tokenModifiers));
+		});
+		
 		return builder.build();
 	}
 
+	private _encodeCalls(symbol: SymbolInformation, document: TextDocument): IParsedToken[] {
+		let newUserVariable: IParsedToken[] = [];
+		const lines = document.getText().split(/\r\n|\r|\n/);
+		let symbolDone: any = {};
+
+			for (let i = 0; i < lines.length; i++) {
+
+				const line = lines[i];
+					if (!symbolDone[symbol.name]) {
+						window.showInformationMessage(symbol.toString());
+						// Convert name of symbol to regex
+						let symbolMatch = new RegExp(symbol.name);
+						let match: RegExpExecArray | null = null;
+
+						// Look for each symbol on each line
+						// But not declarations
+						// Index mismatch is a better candidate here because avoiding "=" altogether would risk missing logic and control statements
+						if (line.indexOf("=") !== line.lastIndexOf("=")) {
+							while (match = symbolMatch.exec(line)) {
+								if (match[0].endsWith("=")) {
+									continue;
+								}
+								let word = match[0].trim();
+								newUserVariable.push({
+									line: i,
+									startCharacter: line.indexOf(word),
+									length: word.length,
+									tokenType: 'variable',
+									tokenModifiers: []
+								});
+							}
+						}
+					}
+			}
+		return newUserVariable;
+	}
 
 	private _encodeTokenType(tokenType: string): number {
 		if (tokenType === 'variable') {
@@ -76,23 +157,24 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 		return result;
 	}
 
-	private _parseText(text: string): IParsedToken[] {
+	private _parseText(document: TextDocument): IParsedToken[] {
 		const r: IParsedToken[] = [];
-		const lines = text.split(/\r\n|\r|\n/);
+		const lines = document.getText().split(/\r\n|\r|\n/);
+
 		for (let i = 0; i < lines.length; i++) {
 
 			const line = lines[i];
 
-			// Looking for variable declaration
-			let variableMatch = /([a-z_$\x7f-\xff][a-zA-Z0-9_$\x7f-\xff]*)(\s*)/g;
+			// Looking for variable declarations
+			let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_$\x7f-\xff]*)(\s*)\=/g;
 			let match: RegExpExecArray | null = null;
 
 			if (line.indexOf("=") === line.lastIndexOf("=")) {
-                while (match = variableMatch.exec(line.split("=")[0])) {
-                    if (match[0].endsWith("=")) {
+                while (match = variableMatch.exec(line)) {
+                    if (match[0].endsWith("==")) {
                         continue;
                     }
-					let word = match[0].trimRight();
+					let word = match[0].split("=")[0].trimRight();
 					r.push({
 						line: i,
 						startCharacter: line.indexOf(word),
@@ -100,15 +182,11 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						tokenType: 'variable',
 						tokenModifiers: ['declaration']
 					});
+					// let location = new Location(document.uri, new Range(new Position(i, line.indexOf(word)), new Position(i, word.length)));
+					// this._encodeCalls(new SymbolInformation(word, SymbolKind.Variable, word, location), document);
 				}
 			}
 		}
 		return r;
 	}
-}
-
-export class PraatUserHighlighter implements PraatUserVariable {
-	name: string = 'test';
-	type?: string | undefined;
-	value: any;
 }

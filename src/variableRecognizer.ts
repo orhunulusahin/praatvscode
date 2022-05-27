@@ -17,7 +17,7 @@ export default class PraatDocumentSymbolProvider implements DocumentSymbolProvid
         for (let i = 0; i < document.lineCount; i++) {
             let line = document.lineAt(i);
 
-            let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s*)\=/g;
+            let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_$\x7f-\xff]*)(\s*)\=/g;
 			let match: RegExpExecArray | null = null;
 
 			while (match = variableMatch.exec(line.text)) {
