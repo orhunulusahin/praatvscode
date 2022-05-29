@@ -1267,5 +1267,10 @@ export const globalfunctions: IEntries = {
         niceName: 'zero (number)',
         preSnippet: 'zero (${0:number})'
     },
-    
+    Formula: {
+        description: 'Formula for sounds',
+        signature: 'Formula...',
+        niceName: 'Formula',
+        preSnippet: 'Formula... ${0:formula}'
+    }
 };

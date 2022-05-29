@@ -45,8 +45,6 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 
     public async provideDocumentSemanticTokens(document: TextDocument, _token: CancellationToken): Promise<SemanticTokens | null | undefined> {
 		
-		const documentSymbols: SymbolInformation[] = await commands.executeCommand('vscode.executeDocumentSymbolProvider', document.uri);
-
 		// Gets all declarations
 		const allTokens = this._parseText(document);
 		const builder = new SemanticTokensBuilder();
@@ -54,89 +52,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 			builder.push(token.line, token.startCharacter, token.length, this._encodeTokenType(token.tokenType), this._encodeTokenModifiers(token.tokenModifiers));
 		});
 
-		// Highlight every call of every user-defined variable
-		let symbolDone: any = {};
-		const userCall: IParsedToken[] = [];
-		let orange = window.createOutputChannel("Orange");
-		const lines = document.getText().split(/\r\n|\r|\n/);
-
-		// documentSymbols.forEach(symbol => {
-		// 	if (!symbolDone[symbol.name]) {
-		// 		for (let i = 0; i < document.lineCount; i++) {
-		// 			let line = lines[i];
-		// 					orange.appendLine('beep');
-		// 					let symbolMatch = new RegExp(symbol.name);
-		// 					let match: RegExpExecArray | null = null;
-		// 					// Unless the number of equal signs is 1 or 0...
-		// 					orange.appendLine(line.split("=").length.toString());
-		// 					// if (line.split("=").length > 1) {
-		// 						orange.appendLine('boop');
-		// 						while (match = symbolMatch.exec(line)) {
-		// 							let word = match[0].trim();
-		// 							userCall.push({
-		// 								line: i,
-		// 								startCharacter: line.indexOf(word),
-		// 								length: word.length,
-		// 								tokenType: 'variable',
-		// 								tokenModifiers: []
-		// 							});
-		// 							orange.appendLine(word);
-		// 						}
-		// 					// }
-		// 					// window.showInformationMessage(match[0]);
-		// 					// orange.appendLine(symbol.name + " " + symbol.location);
-		// 				}
-		// 		};
-		// 	symbolDone[symbol.name] = true;	
-		// });
-	
-		// userCall.forEach((userVariable) => {
-		// 	builder.push(userVariable.line, userVariable.startCharacter, userVariable.length, this._encodeTokenType(userVariable.tokenType), this._encodeTokenModifiers(userVariable.tokenModifiers));
-		// });
-		
 		return builder.build();
-	}
-
-	private _encodeCalls(symbol: SymbolInformation, document: TextDocument): IParsedToken[] {
-		let newUserVariable: IParsedToken[] = [];
-		const lines = document.getText().split(/\r\n|\r|\n/);
-		let symbolDone: any = {};
-
-			for (let i = 0; i < lines.length; i++) {
-
-				const line = lines[i];
-					if (!symbolDone[symbol.name]) {
-						window.showInformationMessage(symbol.toString());
-						// Convert name of symbol to regex
-						let symbolMatch = new RegExp(symbol.name);
-						let match: RegExpExecArray | null = null;
-
-						// Look for each symbol on each line
-						// But not declarations
-						// Index mismatch is a better candidate here because avoiding "=" altogether would risk missing logic and control statements
-						if (line.indexOf("=") !== line.lastIndexOf("=")) {
-							while (match = symbolMatch.exec(line)) {
-								if (match[0].endsWith("=")) {
-									continue;
-								}
-								// Ignore comments
-								if (line.includes("#") || line.includes(";")) {
-									continue;
-								}
-								// Trim only right to maintain index in line
-								let word = match[0].trimRight();
-								newUserVariable.push({
-									line: i,
-									startCharacter: line.indexOf(word),
-									length: word.length,
-									tokenType: 'variable',
-									tokenModifiers: []
-								});
-							}
-						}
-					}
-			}
-		return newUserVariable;
 	}
 
 	private _encodeTokenType(tokenType: string): number {
@@ -190,7 +106,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 					});
 
 					// Now try to catch and highlight all calls to the newly defined variable
-					for (let j = i; j < lines.length; j++) {
+					for (let j = i+1; j < lines.length; j++) {
 						let callLine = lines[j];
 						// If word is not embedded in another word...
 						// There MUST be plenty of room for optimization here!

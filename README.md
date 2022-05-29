@@ -1,8 +1,8 @@
-# PraatVSCode (v0.8.0)
+# PraatVSCode (v0.9.0)
 
 ## 1. Summary
 
-    ⚠️Version 0.8.0 is a public test version of PraatVSCode!⚠️
+    ⚠️ v0.9.0 is a public test version of PraatVSCode!⚠️
 
 PraatVSCode is an open-source Visual Studio Code extension for Praat users. Its primary aim is to address the shortcomings of the native Praat code editor, which is a plain text editor with a *Run* button.
 
@@ -42,7 +42,39 @@ Note: PraatVSCode does not impose its own color theme but simply uses the user-s
 
 As of version 0.7.3, the extension provides highlighting and QoL features for TextGrid files as well.
 
-### 2.2 Running Scripts
+### 2.2 Semantic Highlighting
+
+As of version 0.9.0, PraatVSCode provides semantic highlighting for user-defined variables and procedures. User-defined variables and procedures are also registered as abstract symbols as the first step of giving PraatVSCode a more abstract understanding of Praat scripts.
+
+![semantic_highlighter](/assets/semantic_hi.gif)
+
+### 2.3 Definitions
+
+No more forgetting what that variable was! Users can use the right-click menu or the shortcut F12 to go to the definition/declaration of a variable.
+
+![definitions](/assets/definitions.gif)
+
+### 2.4 References
+
+Users can browse all calls to a variable using tthe right click menu or the shortcut Shift+F12 (or just F12 if you the user is on a declaration).
+
+![references](/assets/references.gif)
+
+### 2.5 Autocompletion
+
+PraatVSCode will suggest autocompletion items as the user types. The list of suggested items includes user-defined variables.
+
+![autocompletion](/assets/autocompletion.gif)
+
+Note: Currently, the items are only indexed alphabettically and none take priority over others. However, in future versions, relevant suggestions (e.g., a numeric function for a formula instead of a string function) may be prioritized.
+
+### 2.6 Hover Info
+
+![hoverinfo](/assets/hoverinfo.png)
+
+Hovering on a symbol recognized as a keyword will display relevant information to the user. This relevant information can include the type of symbol, the syntax and input types for a function, descriptions of symbols and more.
+
+### 2.7 Running Scripts
 
 Users can run scripts directly through PraatVSCode. In version 1.0.0, it is possible to:
 
@@ -53,7 +85,7 @@ Users can run scripts directly through PraatVSCode. In version 1.0.0, it is poss
 
 Note that the lattter 3 options require Praat version 6.2 and above. Additionally, if the active file is not designated as a Praat script in VSCode, the extension will not carry out these commands and will warn the user.
 
-#### 2.2.1 Setting a Path for Praat
+#### 2.7.1 Setting a Path for Praat
 
 Before doing any of these, the user must designate a path to the Praat program so that the extension can call it and send it scripts to run. Upon activation, PraatVSCode will add an indicator to the VSCode status bar, warning the user that a path has not been set yet. By clicking the indicator, the user can bring up a prompt to enter the path to the Praat application. Bear in mind that, backslashes (\\) must be used in paths on Windows while forward-slashes (/) are used on UNIX-based systems.
 
@@ -65,25 +97,13 @@ Once the Praat path is set, the user gains access to the "Run in background" and
 
 The path is saved in a workspace global state with a machine scope. So, users don't have to set the path at every activation of the extension but only at when switching between machines.
 
-#### 2.2.2 Running a Script in the Background
+#### 2.7.2 Running a Script in the Background
 
 This command, which is also accessible by the button described above, runs the active (i.e., currently visible on VSCode) Praat script using the Praat application but without opening a Praat window. When this command is used, outputs that would normally go into a Praat info window instead go to a custom output in VSCode that is automatically created and shown to the user. This option is particularly useful for speeding up batch processing of files where no intermittent manual checks are needed.
 
-#### 2.2.3 "Sending" Scripts to Praat
+#### 2.7.3 "Sending" Scripts to Praat
 
 Users can open scripts in Praat through the extension, optionally running them as well. These commands are particularly useful when the user requires the Praat GUI to make manual checks or adjustments. These commands rely on the VSCode-Command Line-Praat interaction and use the "--send" function which was introduced in Praat 6.2. Thus, users will only be able to "send" their scripts to Praat versions 6.2 and above.
-
-### 2.3 Autocompletion
-
-![autocompletion](/assets/autocompletion.png)
-
-PraatVSCode will suggest autocompletion items as the user types. Currently, the items are indexed only alphabettically and none take priority over others. However, in future versions, relevant suggestions (e.g., a numeric function for a formula instead of a string function) may be prioritized.
-
-### 2.4 Hover Info
-
-![hoverinfo](/assets/hoverinfo.png)
-
-Hovering on a symbol recognized as a keyword will display relevant information to the user. This relevant information can include the type of symbol, the syntax and input types for a function, descriptions of symbols and more.
 
 ## 3. License & Contributing
 
