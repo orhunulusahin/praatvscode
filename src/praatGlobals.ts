@@ -19,8 +19,6 @@ export const globalvariables: IEntries = {
 		niceName: 'Read from file'
 	}
 };
-export const compiletimeconstants: IEntries = {
-};
 export const keywords: IEntries = {
 	procedure: {
 		description: 'Defines a custom function.',

@@ -1,13 +1,13 @@
 'use strict';
 
-// The module 'vscode' contains the VS Code extensibility API
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import PraatCompletionItemProvider from './completionItemProvider';
 import PraatHoverProvider from './HoverProvider';
-import PraatDocumentSymbolProvider from './variableRecognizer';
+import PraatDocumentSymbolProvider from './SymbolProvider';
 import PraatSemanticHighlighter, { PraatLegend } from './SemanticTokensProvider';
 import PraatDefinitionProvider from './DefinitionProvider';
+import PraatReferenceProvider from './ReferenceProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -257,6 +257,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider('praat', new PraatSemanticHighlighter(), new PraatLegend));
 	// Symbol declaration provider for user defined variables
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider('praat', new PraatDefinitionProvider));
+	// Reference provider for finding references to variables
+	context.subscriptions.push(vscode.languages.registerReferenceProvider('praat', new PraatReferenceProvider()));
 }
 
 // this method is called when the extension is deactivated

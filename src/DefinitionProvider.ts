@@ -7,8 +7,6 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
         let result:Declaration;
         let added: any = {};
 
-        const text = document.getText();
-
         // Get the range of the current word
         let range = document.getWordRangeAtPosition(position);
         if (!range) {
@@ -25,12 +23,16 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
             if (line.text.includes("=")) {
                 while (match = declarationMatch.exec(line.text.split("=")[0])) {
                     let word:string;
+                    // If logical comparison...
                     if (match[0].endsWith("=")) {
                         continue;
                     }
-
-                    // Get rid of trailing spaces to isolate token
-                    word = match[0].trimRight();
+                    // Ignore comments
+                    if (line.text.includes("#") || line.text.includes(";")) {
+                        continue;
+}
+                    // Get rid of spaces to isolate token
+                    word = match[0].trim();
 
                     if (!added[word]) {
                         added[word] = true;

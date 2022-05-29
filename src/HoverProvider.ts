@@ -21,7 +21,7 @@ export default class PraatHoverProvider implements HoverProvider {
 
 		let name = document.getText(wordRange);
 
-		let entry = praatGlobalFunctions.globalfunctions[name] || praatGlobals.compiletimeconstants[name] || praatGlobals.globalvariables[name] || praatGlobals.keywords[name];
+		let entry = praatGlobalFunctions.globalfunctions[name] || praatGlobals.globalvariables[name] || praatGlobals.keywords[name];
 		if (entry && entry.description) {
 			let signature = name + (entry.signature || '');
 			let contents: MarkedString[] = [textToMarkedString(entry.description), { language: 'praat', value: signature }];

@@ -40,12 +40,10 @@ tokenModifiersLegend.forEach((tokenModifier, index) => tokenModifiers.set(tokenM
 
 export default class PraatSemanticHighlighter implements DocumentSemanticTokensProvider {
 
-    // onDidChangeSemanticTokens?: Event<void> | undefined;
+    onDidChangeSemanticTokens?: Event<void> | undefined;
 
     public async provideDocumentSemanticTokens(document: TextDocument, _token: CancellationToken): Promise<SemanticTokens | null | undefined> {
-
-		var added: any = {};
-
+		
 		const documentSymbols: SymbolInformation[] = await commands.executeCommand('vscode.executeDocumentSymbolProvider', document.uri);
 
 		// Gets all declarations
@@ -61,37 +59,39 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 		let orange = window.createOutputChannel("Orange");
 		const lines = document.getText().split(/\r\n|\r|\n/);
 
-		for (let i = 0; i < document.lineCount; i++) {
-			let line = lines[i];
-			documentSymbols.forEach(symbol => {
-				if (!symbolDone[symbol.name]) {
-					orange.appendLine('beep');
-					let symbolMatch = new RegExp(symbol.name);
-					let match: RegExpExecArray | null = null;;
-					if (line.indexOf("=") !== line.lastIndexOf("=")) {
-						orange.appendLine('boop');
-						while (match = symbolMatch.exec(line)) {
-							let word = match[0].trim();
-							userCall.push({
-								line: i,
-								startCharacter: line.indexOf(word),
-								length: word.length,
-								tokenType: 'variable',
-								tokenModifiers: []
-							});
-							orange.appendLine(word);
-						}
-					}
-					// window.showInformationMessage(match[0]);
-					// orange.appendLine(symbol.name + " " + symbol.location);
-				}
-				symbolDone[symbol.name] = true;
-			});		
-		};
+		// documentSymbols.forEach(symbol => {
+		// 	if (!symbolDone[symbol.name]) {
+		// 		for (let i = 0; i < document.lineCount; i++) {
+		// 			let line = lines[i];
+		// 					orange.appendLine('beep');
+		// 					let symbolMatch = new RegExp(symbol.name);
+		// 					let match: RegExpExecArray | null = null;
+		// 					// Unless the number of equal signs is 1 or 0...
+		// 					orange.appendLine(line.split("=").length.toString());
+		// 					// if (line.split("=").length > 1) {
+		// 						orange.appendLine('boop');
+		// 						while (match = symbolMatch.exec(line)) {
+		// 							let word = match[0].trim();
+		// 							userCall.push({
+		// 								line: i,
+		// 								startCharacter: line.indexOf(word),
+		// 								length: word.length,
+		// 								tokenType: 'variable',
+		// 								tokenModifiers: []
+		// 							});
+		// 							orange.appendLine(word);
+		// 						}
+		// 					// }
+		// 					// window.showInformationMessage(match[0]);
+		// 					// orange.appendLine(symbol.name + " " + symbol.location);
+		// 				}
+		// 		};
+		// 	symbolDone[symbol.name] = true;	
+		// });
 	
-		userCall.forEach((userVariable) => {
-			builder.push(userVariable.line, userVariable.startCharacter, userVariable.length, this._encodeTokenType(userVariable.tokenType), this._encodeTokenModifiers(userVariable.tokenModifiers));
-		});
+		// userCall.forEach((userVariable) => {
+		// 	builder.push(userVariable.line, userVariable.startCharacter, userVariable.length, this._encodeTokenType(userVariable.tokenType), this._encodeTokenModifiers(userVariable.tokenModifiers));
+		// });
 		
 		return builder.build();
 	}
@@ -118,7 +118,12 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 								if (match[0].endsWith("=")) {
 									continue;
 								}
-								let word = match[0].trim();
+								// Ignore comments
+								if (line.includes("#") || line.includes(";")) {
+									continue;
+								}
+								// Trim only right to maintain index in line
+								let word = match[0].trimRight();
 								newUserVariable.push({
 									line: i,
 									startCharacter: line.indexOf(word),

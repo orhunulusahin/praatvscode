@@ -67,12 +67,6 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 				result.push(createNewProposal(CompletionItemKind.Function, globalfunctions, praatGlobalFunctions.globalfunctions[globalfunctions]));
 			}
 		}
-		for (let compiletimeconstants in praatGlobals.compiletimeconstants) {
-			if (praatGlobals.compiletimeconstants.hasOwnProperty(compiletimeconstants) && matches(compiletimeconstants)) {
-				added[compiletimeconstants] = true;
-				result.push(createNewProposal(CompletionItemKind.Field, compiletimeconstants, praatGlobals.compiletimeconstants[compiletimeconstants]));
-			}
-		}
 		for (let keywords in praatGlobals.keywords) {
 			if (praatGlobals.keywords.hasOwnProperty(keywords) && matches(keywords)) {
 				added[keywords] = true;
@@ -104,7 +98,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			}
 		}
 
-		// Now do user-defined functions (procedures in Praat)
+		// Now do user-defined functions ("procedures" in Praat)
 		let functionMatch = /procedure\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\(/g;
 		let match2: RegExpExecArray | null = null;
 		while (match2 = functionMatch.exec(text)) {
