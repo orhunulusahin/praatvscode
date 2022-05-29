@@ -21,6 +21,7 @@ This update allows PraatVSCode to have a much deeper, "abstract" understanding o
 - More readable global database for hover and autocompletion provision.
 - Corrected typos in main grammar.
 - Optimization of semantic context functions (They no longer look for semantics in commented lines).
+- The readme file has been reorganized and now overwhelmingly uses gifs over pngs.
 
 ## [0.8.0] - Second Public Test Release
 
