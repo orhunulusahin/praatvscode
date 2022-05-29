@@ -1,5 +1,6 @@
 import { match } from 'assert';
 import { info } from 'console';
+import { posix } from 'path';
 import { window, CancellationToken, commands, DocumentSymbolProvider, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, SymbolKind, Uri, SymbolInformation, Location, Range, Position } from 'vscode';
 
 interface IParsedToken {
@@ -174,7 +175,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 			let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_$\x7f-\xff]*)(\s*)\=/g;
 			let match: RegExpExecArray | null = null;
 
-			if (line.indexOf("=") === line.lastIndexOf("=")) {
+			if (line.indexOf("=") === line.lastIndexOf("=") && !line.includes('if') && !line.includes('#') && !line.includes(';')) {
                 while (match = variableMatch.exec(line)) {
                     if (match[0].endsWith("==")) {
                         continue;
@@ -187,9 +188,42 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						tokenType: 'variable',
 						tokenModifiers: ['declaration']
 					});
-					// let location = new Location(document.uri, new Range(new Position(i, line.indexOf(word)), new Position(i, word.length)));
-					// this._encodeCalls(new SymbolInformation(word, SymbolKind.Variable, word, location), document);
+
+					// Now try to catch and highlight all calls to the newly defined variable
+					for (let j = i; j < lines.length; j++) {
+						let callLine = lines[j];
+						// If word is not embedded in another word...
+						// There MUST be plenty of room for optimization here!
+						if (callLine.includes(word) && document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(word)+1))) === word && !callLine.includes('#') && !callLine.includes(';')) {
+							r.push({
+								line: j,
+								startCharacter: callLine.indexOf(word),
+								length: word.length,
+								tokenType: 'variable',
+								tokenModifiers: []
+							});
+						}
+					}
 				}
+			}
+
+			// And for procedure declarations
+			if (line.includes('procedure')) {
+				let procName:string = '';
+				// See if it takes arguments
+				if (line.includes(':')) {
+					procName = line.substring(9,line.length).split(':')[0].trim();
+				}
+				else {
+					procName = line.substring(9,line.length).trim();
+				}
+				r.push({
+					line: i,
+					startCharacter: line.indexOf(procName),
+					length: procName.length,
+					tokenType: 'function',
+					tokenModifiers: ['declaration']
+				});
 			}
 		}
 		return r;

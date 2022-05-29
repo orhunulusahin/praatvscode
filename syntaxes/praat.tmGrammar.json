@@ -286,6 +286,24 @@
         }
       ]
     },
+    "proc-declaration": {
+      "patterns": [
+        {
+          "match": "(\\b|\\s|\\t)*?(procedure)\\s([a-z][a-zA-Z0-9_]+)(\\:)?(\\b|\\s)?",
+          "captures": {
+            "2": {
+              "name": "keyword.control.praat"
+            },
+            "3": {
+              "name": "support.function.praat"
+            },
+            "4": {
+              "name": "support.function.praat"
+            }
+          }
+        }
+      ]
+    },
     "class-builtin": {
       "match": "\\b((Long)?Sound|Text(Grid|Tier)|Formant(Grid)?|Strings|all|Intensity(Tier)?|Pitch(Tier)?|PointProcess|Table(OfReal)?|Matrix|Polygon|Distributions|PairDistribution|Permutation|ParamCurve|Harmonicity|Electroglottogram|Spectrum|Ltas|LPC|Cepstrum|(LF|MF)?CC|Excitation(s)?|Cochleagram|Manipulation|Duration(Tier)?|Speaker|Articulation|VocalTract|FFNet|PatternList|Categories|Eigen|Polynomial|Roots|ChebyshevSeries|LegendreSeries|(I|M)Spline|Covariance|Confusion|Discriminant|ExperimentMFC|PCA|Correlation|ClassificationTable|SSCP|DTW|Configuration|Dissimilarity|Similarity|Distance|ScalarProduct|ContingencyTable|OTGrammar|WordList|SpellingChecker)\\b",
       "name": "support.class.builtin.praat"
@@ -563,6 +581,9 @@
         },
         {
           "include": "#math-function"
+        },
+        {
+          "include": "#proc-declaration"
         },
         {
           "include": "#string-variables"

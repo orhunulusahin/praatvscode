@@ -27,6 +27,9 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
                     if (match[0].endsWith("=")) {
                         continue;
                     }
+                    if (match[0].includes('if')) {
+                        continue;
+                    }
                     // Ignore comments
                     if (line.text.includes("#") || line.text.includes(";")) {
                         continue;

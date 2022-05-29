@@ -28,6 +28,9 @@ export default class PraatDocumentSymbolProvider implements DocumentSymbolProvid
                 if (match[0].endsWith("==")) {
                     continue;
                 }
+                if (match[0].includes('if')) {
+                    continue;
+                }
 
                 // Remove possible matched space and equal sign
                 if (match[0].endsWith(" =")) {

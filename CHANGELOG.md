@@ -12,14 +12,15 @@ This update allows PraatVSCode to have a much deeper, "abstract" understanding o
 ### Added
 
 - **Symbol recognition for user-defined variables.** You can search/iterate through user-defined variables which are now registered as symbols in VSCode.
-- **Semantic highlighting for defintions of user-defined variables.** Declaring a variable correctly marks its declaration position with a semantic token type "variable" and semantic token modifier "defintion".
+- **Semantic highlighting for defintions of user-defined variables.** Declaring a variable correctly marks its declaration position with a semantic token type "variable" and semantic token modifier "defintion". Calls to the variable *after* its declaration are also highlighted as variables.
 - **Definition provider for user-defined variables.** Can't remember where you defined 'targetTier'? Just click on a call of 'targetTier' and hit F12 (or use the right click menu)!
-- **Reference provider for user-defined variables.** You've found the defintion and now want to see the references/calls to your very own defined variable? Hit F12 while on a 
+- **Reference provider for user-defined variables.** You now want to see the references/calls to your very own defined variable? Use Shift+F12 while on a word or F12 while on a definition!
 
 ### Changed
 
 - More readable global database for hover and autocompletion provision.
 - Corrected typos in main grammar.
+- Optimization of semantic context functions (They no longer look for semantics in commented lines).
 
 ## [0.8.0] - Second Public Test Release
 
