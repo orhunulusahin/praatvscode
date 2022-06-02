@@ -8,10 +8,12 @@ import PraatDocumentSymbolProvider from './SymbolProvider';
 import PraatSemanticHighlighter, { PraatLegend } from './SemanticTokensProvider';
 import PraatDefinitionProvider from './DefinitionProvider';
 import PraatReferenceProvider from './ReferenceProvider';
+import { updatePathIndicator, getPraatButtons, registerButtons, pathIndicator } from './StatusBar';
 
 export function activate(context: vscode.ExtensionContext) {
 
 	const os = require('os');
+	const config = vscode.workspace.getConfiguration('PraatVSCode');
 
 	// Check if user pre-defined path for Praat. If not, return empty string.
 	var praatPath:string = context.globalState.get('praatpath','');
@@ -22,23 +24,23 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	// Status bar button for running the current script (NO GUI)
-	var runBackgroundButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
-	runBackgroundButton.command = 'praatvscode.runScript';
-	runBackgroundButton.text = '$(run) Run in background';
-	runBackgroundButton.name = 'Button to run script with no GUI';
-	runBackgroundButton.tooltip = 'Click to run the script without seeing Praat';
+	// var runBackgroundButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
+	// runBackgroundButton.command = 'praatvscode.runScript';
+	// runBackgroundButton.text = '$(run) Run in background';
+	// runBackgroundButton.name = 'Button to run script with no GUI';
+	// runBackgroundButton.tooltip = 'Click to run the script without seeing Praat';
 
-	// Status bar button for running the current script (w/ GUI)
-	var runPraatButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
-	runPraatButton.command = 'praatvscode.runInPraat';
-	runPraatButton.text = '$(run) Run in Praat';
-	runPraatButton.name = 'Button to run script with GUI';
-	runPraatButton.tooltip = 'Click to run the script in Praat';
+	// // Status bar button for running the current script (w/ GUI)
+	// var runPraatButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
+	// runPraatButton.command = 'praatvscode.runInPraat';
+	// runPraatButton.text = '$(run) Run in Praat';
+	// runPraatButton.name = 'Button to run script with GUI';
+	// runPraatButton.tooltip = 'Click to run the script in Praat';
 
-	// Status bar item for Praat executable path status
-	var pathIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
-	pathIndicator.name = 'Praat path indicator';
-	pathIndicator.command = 'praatvscode.definePath';	
+	// // Status bar item for Praat executable path status
+	// var pathIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
+	// pathIndicator.name = 'Praat path indicator';
+	// pathIndicator.command = 'praatvscode.definePath';
 
 	// Let user provide a path for the Praat executable
 	registerCommandNice('praatvscode.definePath', async() => {
@@ -67,6 +69,10 @@ export function activate(context: vscode.ExtensionContext) {
 		// Update status bar
 		updatePathIndicator();
 	});
+
+	var buttonOneCommand = config.get('praatvscode.runButtonOne');
+	var buttonTwoCommand = config.get('praatvscode.runButtonTwo');
+	vscode.window.showInformationMessage(buttonOneCommand + buttonTwoCommand);
 
 	// Let user view the currently set path for the Praat executable
 	registerCommandNice('praatvscode.getPath', () => {
@@ -224,24 +230,24 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Make status bar items respond to path status
-	function updatePathIndicator() {
-		praatPath = context.globalState.get('praatpath',"");
-		pathIndicator.hide();
-		if (praatPath === undefined || praatPath === "") {
-			pathIndicator.text = '$(new-folder) Praat path not set';
-			pathIndicator.tooltip = 'Click to set a path and run scripts';
-			pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
-			runBackgroundButton.hide();
-			runPraatButton.hide();
-		} else {
-			pathIndicator.text = '$(folder-active)';
-			pathIndicator.tooltip = 'Click to change path';
-			pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.remoteBackground');
-			runBackgroundButton.show();
-			runPraatButton.show();
-		}
-		pathIndicator.show();
-	}
+	// function updatePathIndicator() {
+	// 	praatPath = context.globalState.get('praatpath',"");
+	// 	pathIndicator.hide();
+	// 	if (praatPath === undefined || praatPath === "") {
+	// 		pathIndicator.text = '$(new-folder) Praat path not set';
+	// 		pathIndicator.tooltip = 'Click to set a path and run scripts';
+	// 		pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+	// 		runBackgroundButton.hide();
+	// 		runPraatButton.hide();
+	// 	} else {
+	// 		pathIndicator.text = '$(folder-active)';
+	// 		pathIndicator.tooltip = 'Click to change path';
+	// 		pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.remoteBackground');
+	// 		runBackgroundButton.show();
+	// 		runPraatButton.show();
+	// 	}
+	// 	pathIndicator.show();
+	// }
 
 	// Run status bar stuff once when the extension activates
 	updatePathIndicator();

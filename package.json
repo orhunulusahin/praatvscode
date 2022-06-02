@@ -76,10 +76,6 @@
 		],
 		"commands": [
 			{
-				"command": "praatvscode.helloWorld",
-				"title": "Hello World"
-			},
-			{
 				"command": "praatvscode.definePath",
 				"title": "Define a path for the Praat executable"
 			},
@@ -115,12 +111,30 @@
 		"configuration": {
 			"title": "PraatVSCode",
 			"properties": {
-				"praatvscode.praatpath": {
-				"type": "string",
-				"default": "",
-				"scope": "machine",
-				"description": "Enter the path for the Praat executable here to run Praat scripts through VSCode."
-				}
+				"praatvscode.runButtonOne": {
+					"type": "string",
+					"default": "praatvscode.runScript",
+					"scope": "resource",
+					"enum": ["praatvscode.runScript", "praatvscode.runInPraat", "praatvscode.openInPraat"],
+					"enumDescriptions": [
+						"Runs a script in the background without opening Praat and simulates a Praat info window",
+						"Runs a script in Praat after calling the Praat GUI",
+						"Opens a script in the Praat code editor but does not run it"
+					],
+					"description": "Select a command to associate with the first Praat run button in the status bar."
+				},
+				"praatvscode.runButtonTwo": {
+					"type": "string",
+					"default": "praatvscode.openInPraat",
+					"scope": "resource",
+					"enum": ["praatvscode.runScript", "praatvscode.runInPraat", "praatvscode.openInPraat"],
+					"enumDescriptions": [
+						"Runs a script in the background without opening Praat and simulates a Praat info window",
+						"Runs a script in Praat after calling the Praat GUI",
+						"Opens a script in the Praat code editor but does not run it"
+					],
+					"description": "Select a command to associate with the second Praat run button in the status bar."
+					}
 			}
 		},
 		"snippets": [
