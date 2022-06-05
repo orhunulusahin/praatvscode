@@ -1,18 +1,22 @@
-import { window, CancellationToken, commands, DocumentSymbolProvider, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, SymbolKind, Uri, SymbolInformation, Location, Range, Position } from 'vscode';
+// Semantic token provider for PraatVSCode
+// Orhun Ulusahin, updated 06/06/2022
 
-export function getIndicesOf(searchStr:string, str:string, caseSensitive:boolean) {
-    var searchStrLen = searchStr.length;
+import { window, CancellationToken, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, Position } from 'vscode';
+
+// Gets array of indices for multiple occurences of substring
+export function getIndices(needle:string, haystack:string, matchCase:boolean): number[] {
+    let searchStrLen = needle.length;
     if (searchStrLen === 0) {
         return [];
     }
-    var startIndex = 0, index, indices = [];
-    if (!caseSensitive) {
-        str = str.toLowerCase();
-        searchStr = searchStr.toLowerCase();
+    let searchOnset = 0, index, indices = [];
+    if (!matchCase) {
+		needle = needle.toLowerCase();
+        haystack = haystack.toLowerCase();
     }
-    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+    while ((index = haystack.indexOf(needle, searchOnset)) > -1) {
         indices.push(index);
-        startIndex = index + searchStrLen;
+        searchOnset = index + searchStrLen;
     }
     return indices;
 }
@@ -125,13 +129,17 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						let callLine = lines[j];
 						// If word is not embedded in another word...
 						// There MUST be plenty of room for optimization here!
-						if (callLine.includes(word) && document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(word)+1))) === word && !callLine.trimLeft().startsWith('#') && !callLine.trimLeft().startsWith(';')) {
-							r.push({
-								line: j,
-								startCharacter: callLine.indexOf(word),
-								length: word.length,
-								tokenType: 'variable',
-								tokenModifiers: []
+						let following = document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(word)+1)));
+						if (callLine.includes(word) && following === word && !callLine.trimLeft().startsWith('#') && !callLine.trimLeft().startsWith(';')) {
+							let indices = getIndices(word,callLine,false);
+							indices.forEach(index => {
+								r.push({
+									line: j,
+									startCharacter: index,
+									length: word.length,
+									tokenType: 'variable',
+									tokenModifiers: []
+								});
 							});
 						}
 					}
@@ -160,7 +168,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 							// There MUST be plenty of room for optimization here!
 							let following = document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(iterator)+1)));
 							if (callLine.includes(iterator) && following === iterator && !callLine.trimLeft().startsWith('#') && !callLine.trimLeft().startsWith(';')) {
-								let indices = getIndicesOf(iterator,callLine,false);
+								let indices = getIndices(iterator,callLine,false);
 								indices.forEach(index => {
 									r.push({
 										line: j,

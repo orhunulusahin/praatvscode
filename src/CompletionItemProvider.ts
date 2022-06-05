@@ -54,7 +54,6 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			let twoBeforePosition = new Position(range.start.line, range.start.character - 2);
 			let beforeWord = document.getText(new Range(twoBeforePosition, range.start));
 		}
-
 		for (let globalvariables in praatGlobals.globalvariables) {
 			if (praatGlobals.globalvariables.hasOwnProperty(globalvariables) && matches(globalvariables)) {
 				added[globalvariables] = true;
@@ -65,6 +64,12 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			if (praatGlobalFunctions.globalfunctions.hasOwnProperty(globalfunctions) && matches(globalfunctions)) {
 				added[globalfunctions] = true;
 				result.push(createNewProposal(CompletionItemKind.Function, globalfunctions, praatGlobalFunctions.globalfunctions[globalfunctions]));
+			}
+		}
+		for (let keywords in praatGlobals.classes) {
+			if (praatGlobals.classes.hasOwnProperty(keywords) && matches(keywords)) {
+				added[keywords] = true;
+				result.push(createNewProposal(CompletionItemKind.Class, keywords, praatGlobals.keywords[keywords]));
 			}
 		}
 		for (let keywords in praatGlobals.keywords) {

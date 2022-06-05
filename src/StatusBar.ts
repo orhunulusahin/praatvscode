@@ -2,7 +2,6 @@
 // Orhun Ulusahin 06/2022
 
 import * as vscode from 'vscode';
-// const os = require('os');
 
 export var pathIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
 pathIndicator.name = 'Praat path indicator';

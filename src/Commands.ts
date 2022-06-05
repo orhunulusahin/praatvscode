@@ -1,5 +1,5 @@
 // Commands for PraatVSCode
-// Orhun Ulusahin, 06/2022
+// Orhun Ulusahin, 05/06/2022
 
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
@@ -19,7 +19,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
     var praatPath:string = context.globalState.get('praatpath','');
 
     // Create an output window to emulate Praat's
-	let praatOut = vscode.window.createOutputChannel("Praat InfoWindow");
+	var praatOut = vscode.window.createOutputChannel("Praat InfoWindow");
 
     // Command for defining Praat path
     registerCommandNice(context, 'praatvscode.definePath', async() => {

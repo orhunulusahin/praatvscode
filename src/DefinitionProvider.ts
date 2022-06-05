@@ -54,7 +54,7 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
             }
 
             // Now look for a declaration as an iterator
-            if (line.text.includes("for") && line.text.includes(needle)) {
+            if (line.text.includes("for") && line.text.includes("to") && line.text.includes(needle) && !line.text.trimLeft().startsWith("#") && !line.text.trimLeft().startsWith(";")) {
                 if (!added[needle]) {
                     added[needle] = true;
                     let definitionBegin = new Position (line.lineNumber, line.text.indexOf(needle));
@@ -64,6 +64,26 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
                     return Promise.resolve(result);
                 }
             }
+
+            // Define user declared functions (procedures)
+            // if (line.text.includes("procedure") && !line.text.trimLeft().startsWith("#") && !line.text.trimLeft().startsWith(";")) {
+            //     let procName:string = '';
+			// 	// See if it takes arguments
+			// 	if (line.text.includes(':')) {
+			// 		procName = line.text.substring(9,line.text.length).split(':')[0].trim();
+			// 	}
+			// 	else {
+			// 		procName = line.text.substring(9,line.text.length).trim();
+			// 	}
+            //     if (!added[procName]) {
+            //         added[procName] = true;
+            //         let definitionBegin = new Position (line.lineNumber, line.text.indexOf(procName));
+            //         let definitionEnd = new Position (line.lineNumber, line.text.indexOf(procName)+procName.length);
+            //         // Designate word range as definition
+            //         result = new Location(document.uri, new Range (definitionBegin, definitionEnd));
+            //         return Promise.resolve(result);
+            //     }
+            // }
         }
     }
 }

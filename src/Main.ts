@@ -1,7 +1,6 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import * as cp from 'child_process';
 import PraatCompletionItemProvider from './completionItemProvider';
 import PraatHoverProvider from './HoverProvider';
 import PraatDocumentSymbolProvider from './SymbolProvider';
@@ -15,10 +14,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Run status bar stuff once when the extension activates
 	updatePathIndicator(context);
+
 	// Register status bar items on the first run
 	updateButtons();
+
 	// Update status bar if user changes configuration
-	// Add event listener to catch change
 	vscode.workspace.onDidChangeConfiguration(changed => {
 		updateButtons();
 	});
@@ -32,10 +32,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerHoverProvider('praat', new PraatHoverProvider()));
 	// Recognize user-defined symbols
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider('praat', new PraatDocumentSymbolProvider()));
-	// Additional semantic highlighting for user defined variables
-	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider('praat', new PraatSemanticHighlighter(), new PraatLegend));
+	// Semantic highlighting for user defined variables
+	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider('praat', new PraatSemanticHighlighter(), new PraatLegend()));
 	// Symbol declaration provider for user defined variables
-	context.subscriptions.push(vscode.languages.registerDefinitionProvider('praat', new PraatDefinitionProvider));
+	context.subscriptions.push(vscode.languages.registerDefinitionProvider('praat', new PraatDefinitionProvider()));
 	// Reference provider for finding references to variables
 	context.subscriptions.push(vscode.languages.registerReferenceProvider('praat', new PraatReferenceProvider()));
 }

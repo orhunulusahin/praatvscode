@@ -1,8 +1,8 @@
-import { SnippetString } from "vscode";
-
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface IEntry { description?: string; signature?: string; preSnippet?: string; niceName?: string}
 export interface IEntries { [name: string]: IEntry }
+export interface PraatClass { description: string; fileExtensions?: string; signature?: string }
+export interface ClassEntries { [name: string]: PraatClass }
 
 export const globalvariables: IEntries = {
 	read_from_file: {
@@ -35,7 +35,10 @@ export const keywords: IEntries = {
 	until: {
 	},
 	repeat: {
-	},
+	}
+};
+
+export const classes: ClassEntries = {
 	LongSound: {
 		description: 'A LongSound object in Praat.',
 		signature: ' ( string object_name ):  object'
@@ -292,4 +295,4 @@ export const keywords: IEntries = {
 		description: 'A SpellingChecker object in Praat.',
 		signature: ' ( string object_name ):  object'
 	}	
-};
+}
