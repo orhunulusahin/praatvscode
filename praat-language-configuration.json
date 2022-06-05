@@ -32,8 +32,8 @@
 	},
 	"wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
 	"indentationRules": {
-		"decreaseIndentPattern": "^(.*)?\\s*\\b(end(if|for|while|form)|until|else|elsif|elif)\\b.*$",
-		"increaseIndentPattern": "^(.*)?\\s*\\b(for|while|repeat|if|else|elsif|elif|form)\\b.*$"
+		"decreaseIndentPattern": "^(.*)?\\s*\\b(end(if|for|while|form|proc)|until|else|elsif|elif)\\b.*$",
+		"increaseIndentPattern": "^(.*)?\\s*\\b(for|while|repeat|if|else|elsif|elif|form|procedure)\\b.*$"
 		
 	}
 }

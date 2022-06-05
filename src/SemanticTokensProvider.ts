@@ -1,7 +1,21 @@
-import { match } from 'assert';
-import { info } from 'console';
-import { posix } from 'path';
 import { window, CancellationToken, commands, DocumentSymbolProvider, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, SymbolKind, Uri, SymbolInformation, Location, Range, Position } from 'vscode';
+
+export function getIndicesOf(searchStr:string, str:string, caseSensitive:boolean) {
+    var searchStrLen = searchStr.length;
+    if (searchStrLen === 0) {
+        return [];
+    }
+    var startIndex = 0, index, indices = [];
+    if (!caseSensitive) {
+        str = str.toLowerCase();
+        searchStr = searchStr.toLowerCase();
+    }
+    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+        indices.push(index);
+        startIndex = index + searchStrLen;
+    }
+    return indices;
+}
 
 interface IParsedToken {
 	line: number;
@@ -91,7 +105,8 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 			let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_$\x7f-\xff]*)(\s*)\=/g;
 			let match: RegExpExecArray | null = null;
 
-			if (line.indexOf("=") === line.lastIndexOf("=") && !line.includes('if') && !line.includes('#') && !line.includes(';')) {
+			if (line.indexOf("=") === line.lastIndexOf("=") && !line.includes('if') && !line.trimLeft().startsWith('#') && !line.trimLeft().startsWith(';')) {
+				// Look for standard declaration
                 while (match = variableMatch.exec(line)) {
                     if (match[0].endsWith("==")) {
                         continue;
@@ -110,7 +125,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						let callLine = lines[j];
 						// If word is not embedded in another word...
 						// There MUST be plenty of room for optimization here!
-						if (callLine.includes(word) && document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(word)+1))) === word && !callLine.includes('#') && !callLine.includes(';')) {
+						if (callLine.includes(word) && document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(word)+1))) === word && !callLine.trimLeft().startsWith('#') && !callLine.trimLeft().startsWith(';')) {
 							r.push({
 								line: j,
 								startCharacter: callLine.indexOf(word),
@@ -118,6 +133,44 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 								tokenType: 'variable',
 								tokenModifiers: []
 							});
+						}
+					}
+				}
+
+				// Look for loop iterator declaration
+				// The target is trapped between the words "for" and "from"
+				let loopMatch = /(for)(\s*)([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s*)(from)/g;
+				let loopMatchArray: RegExpExecArray | null = null;
+				if (line.includes("for")) {
+					while (loopMatchArray = loopMatch.exec(line)) {
+						// Use position to fetch the whole word
+						let catchPosition = new Position(i, line.indexOf("from")-2);
+						let iterator = document.getText(document.getWordRangeAtPosition(catchPosition));
+						iterator = iterator.trim();
+						r.push({
+							line: i,
+							startCharacter: line.indexOf(iterator),
+							length: iterator.length,
+							tokenType: 'variable',
+							tokenModifiers: ['declaration']
+						});
+						for (let j = i+1; j < lines.length; j++) {
+							let callLine = lines[j];
+							// If word is not embedded in another word...
+							// There MUST be plenty of room for optimization here!
+							let following = document.getText(document.getWordRangeAtPosition(new Position(j, callLine.indexOf(iterator)+1)));
+							if (callLine.includes(iterator) && following === iterator && !callLine.trimLeft().startsWith('#') && !callLine.trimLeft().startsWith(';')) {
+								let indices = getIndicesOf(iterator,callLine,false);
+								indices.forEach(index => {
+									r.push({
+										line: j,
+										startCharacter: index,
+										length: iterator.length,
+										tokenType: 'variable',
+										tokenModifiers: []
+									});
+								});
+							}
 						}
 					}
 				}

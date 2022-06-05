@@ -1,4 +1,7 @@
-import { DefinitionProvider, window, DeclarationProvider, Location, Declaration, Definition, Range,CancellationToken, Position, ProviderResult, TextDocument, DefinitionLink, LocationLink } from 'vscode';
+// Definition provider for PraatVSCode
+// Orhun Ulusahin, 06/2022
+
+import { DefinitionProvider, Location, Declaration, Definition, Range,CancellationToken, Position, ProviderResult, TextDocument, DefinitionLink } from 'vscode';
 
 export default class PraatDefinitionProvider implements DefinitionProvider {
 
@@ -13,38 +16,52 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
 			range = new Range(position, position);
 		}
 
+        let needle = document.getText(range);
+
         // Loop through lines and match selected word
-        for (let i = 0; i < document.lineCount; i++) {
+        for (let i = 0; i < range.start.line; i++) {
             let line = document.lineAt(i);
 
-            let declarationMatch = new RegExp(document.getText(range));
-            let match: RegExpExecArray | null = null;
-
+            // First look for a regular declaration (i.e., var = value)
             if (line.text.includes("=")) {
-                while (match = declarationMatch.exec(line.text.split("=")[0])) {
-                    let word:string;
+                let split = line.text.split("=")[0];
+                if (split.trimStart().startsWith(needle)) {
                     // If logical comparison...
-                    if (match[0].endsWith("=")) {
+                    if (split[0].endsWith("=")) {
                         continue;
                     }
-                    if (match[0].includes('if')) {
+                    if (split[0].includes('if')) {
+                        continue;
+                    }
+                    // Ignore formula
+                    if(split[0].includes('Formula')) {
                         continue;
                     }
                     // Ignore comments
-                    if (line.text.includes("#") || line.text.includes(";")) {
+                    if (line.text.trimLeft().startsWith("#") || line.text.trimLeft().startsWith(";")) {
                         continue;
-}
-                    // Get rid of spaces to isolate token
-                    word = match[0].trim();
+                    }
 
-                    if (!added[word]) {
-                        added[word] = true;
-                        let definitionBegin = new Position (line.lineNumber, line.firstNonWhitespaceCharacterIndex);
-                        let definitionEnd = new Position (line.lineNumber, word.length);
+                    if (!added[needle]) {
+                        added[needle] = true;
+                        let definitionBegin = new Position (line.lineNumber, line.text.indexOf(needle));
+                        let definitionEnd = new Position (line.lineNumber, line.text.indexOf(needle)+needle.length);
                         // Designate word range as definition
                         result = new Location(document.uri, new Range (definitionBegin, definitionEnd));
                         return Promise.resolve(result);
                     }
+                }
+            }
+
+            // Now look for a declaration as an iterator
+            if (line.text.includes("for") && line.text.includes(needle)) {
+                if (!added[needle]) {
+                    added[needle] = true;
+                    let definitionBegin = new Position (line.lineNumber, line.text.indexOf(needle));
+                    let definitionEnd = new Position (line.lineNumber, line.text.indexOf(needle)+needle.length);
+                    // Designate word range as definition
+                    result = new Location(document.uri, new Range (definitionBegin, definitionEnd));
+                    return Promise.resolve(result);
                 }
             }
         }
