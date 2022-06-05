@@ -5,6 +5,18 @@ All notable changes to the PraatVSCode extension will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - Source Code Cleanup and Customizability
+
+### Added
+
+- **The functionality of the two status bar buttons for interacting with Praat can now be configured by the user.** The buttons will update automatically when the user goes to extension settings and updates any configuration under PraatVSCode. The default settings are the "run in background" button for the first, and the "open in Praat" button for the second.
+
+### Changed
+
+- The "extension.ts" *core* file has been cleaned up and the design of the extension was further modularized. Commands are now registered through a separate function exported from a separate document. Status bar items are also managed by a separate function.
+- The Praat output terminal's name in VSCode has been shortened to "Praat InfoWindow".
+
+
 ## [0.9.0] - Abstraction Public Test Release
 
 This update allows PraatVSCode to have a much deeper, "abstract" understanding of a Praat script using the new features listed below.
