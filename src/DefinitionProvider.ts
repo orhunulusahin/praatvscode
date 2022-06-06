@@ -2,6 +2,7 @@
 // Orhun Ulusahin, 06/2022
 
 import { DefinitionProvider, Location, Declaration, Definition, Range,CancellationToken, Position, ProviderResult, TextDocument, DefinitionLink } from 'vscode';
+import { isComment, formWords } from './SemanticTokensProvider';
 
 export default class PraatDefinitionProvider implements DefinitionProvider {
 
@@ -19,7 +20,14 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
         let needle = document.getText(range);
 
         // Loop through lines and match selected word
-        for (let i = 0; i < range.start.line; i++) {
+        // If a procedeure is being called, definition can come after the call
+        if (document.lineAt(range.start.line).text.includes('call')) {
+            var loopTarget = document.lineCount;
+        }
+        else {
+            var loopTarget = range.start.line;
+        }
+        for (let i = 0; i < loopTarget; i++) {
             let line = document.lineAt(i);
 
             // First look for a regular declaration (i.e., var = value)
@@ -54,7 +62,7 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
             }
 
             // Now look for a declaration as an iterator
-            if (line.text.includes("for") && line.text.includes("to") && line.text.includes(needle) && !line.text.trimLeft().startsWith("#") && !line.text.trimLeft().startsWith(";")) {
+            if (line.text.includes("for") && line.text.includes("to") && line.text.includes(needle) && !isComment(line.text)) {
                 if (!added[needle]) {
                     added[needle] = true;
                     let definitionBegin = new Position (line.lineNumber, line.text.indexOf(needle));
@@ -66,24 +74,28 @@ export default class PraatDefinitionProvider implements DefinitionProvider {
             }
 
             // Define user declared functions (procedures)
-            // if (line.text.includes("procedure") && !line.text.trimLeft().startsWith("#") && !line.text.trimLeft().startsWith(";")) {
-            //     let procName:string = '';
-			// 	// See if it takes arguments
-			// 	if (line.text.includes(':')) {
-			// 		procName = line.text.substring(9,line.text.length).split(':')[0].trim();
-			// 	}
-			// 	else {
-			// 		procName = line.text.substring(9,line.text.length).trim();
-			// 	}
-            //     if (!added[procName]) {
-            //         added[procName] = true;
-            //         let definitionBegin = new Position (line.lineNumber, line.text.indexOf(procName));
-            //         let definitionEnd = new Position (line.lineNumber, line.text.indexOf(procName)+procName.length);
-            //         // Designate word range as definition
-            //         result = new Location(document.uri, new Range (definitionBegin, definitionEnd));
-            //         return Promise.resolve(result);
-            //     }
-            // }
+            if (line.text.includes("procedure") && line.text.includes(needle) && !isComment(line.text)) {
+                if (!added[needle]) {
+                    added[needle] = true;
+                    let definitionBegin = new Position (line.lineNumber, line.text.indexOf(needle));
+                    let definitionEnd = new Position (line.lineNumber, line.text.indexOf(needle)+needle.length);
+                    // Designate word range as definition
+                    result = new Location(document.uri, new Range (definitionBegin, definitionEnd));
+                    return Promise.resolve(result);
+                }
+            }
+
+            let hasFormInput = formWords.some((item) => line.text.trimStart().startsWith(item));
+			if (hasFormInput && line.text.includes(needle) && !isComment(line.text)) {
+                if (!added[needle]) {
+                    added[needle] = true;
+                    let definitionBegin = new Position (line.lineNumber, line.text.indexOf(needle));
+                    let definitionEnd = new Position (line.lineNumber, line.text.indexOf(needle)+needle.length);
+                    // Designate word range as definition
+                    result = new Location(document.uri, new Range (definitionBegin, definitionEnd));
+                    return Promise.resolve(result);
+                }
+			}
         }
     }
 }

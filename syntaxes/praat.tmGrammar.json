@@ -403,7 +403,7 @@
       "name": "keyword.control.import.include.praat"
     },
     "select-function": {
-      "match": "(\\s)*?\\b(select(Object| all)?|plus(Object)?|minus(Object)?|Remove|removeObject|Concatenate|Rename|selected|Info|Inspect|Copy)\\b",
+      "match": "(\\s)*?\\b(select(Object| all)?|plus(Object)?|minus(Object)?|Remove|removeObject|Concatenate|Rename|Selected(\\$)?|Info|Inspect|Copy)\\b",
       "captures": {
         "2": { "name": "support.function.praat"}
       }
@@ -419,10 +419,30 @@
         "name": "support.function.praat"
         },
         {
-          "begin": "(\\s)*?\\bexit\\s",
+          "begin": "(\\s)*?\\b(printline|exit|pause)\\s",
           "end": "(.)*?$",
           "beginCaptures": {
             "0": { "name": "support.function.praat" }
+          },
+          "endCaptures": {
+            "0": { "name": "string.punctuation.praat" }
+          }
+        },
+        {
+          "begin": "(\\s)*?\\bform\\s",
+          "end": "(.)*?$",
+          "beginCaptures": {
+            "0": { "name": "keyword.control.praat" }
+          },
+          "endCaptures": {
+            "0": { "name": "string.punctuation.praat" }
+          }
+        },
+        {
+          "begin": "(\\s)*?\\bcomment\\s",
+          "end": "(.)*?$",
+          "beginCaptures": {
+            "0": { "name": "storage.type.praat" }
           },
           "endCaptures": {
             "0": { "name": "string.punctuation.praat" }

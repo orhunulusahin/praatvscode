@@ -12,12 +12,18 @@ export const globalvariables: IEntries = {
 		niceName: 'Read from file'
 	},
 	// testing some stuff
-	flip_a_table: {
-		description: 'Flip a table in Praat',
-		signature: '( Flip a table... filename$ ): table',
-		preSnippet: 'Flip a table... ${0:tablename}',
-		niceName: 'Read from file'
-	}
+	// flip_a_table: {
+	// 	description: 'Flip a table in Praat',
+	// 	signature: '( Flip a table... filename$ ): table',
+	// 	preSnippet: 'Flip a table... ${0:tablename}',
+	// 	niceName: 'Read from file'
+	// }
+	// "test with spaces": {
+	// 	description: 'Flip a table in Praat',
+	// 	signature: '( Flip a table... filename$ ): table',
+	// 	preSnippet: 'Flip a table... ${0:tablename}',
+	// 	niceName: 'Read from file'
+	// }
 };
 export const keywords: IEntries = {
 	procedure: {
@@ -295,4 +301,4 @@ export const classes: ClassEntries = {
 		description: 'A SpellingChecker object in Praat.',
 		signature: ' ( string object_name ):  object'
 	}	
-}
+};

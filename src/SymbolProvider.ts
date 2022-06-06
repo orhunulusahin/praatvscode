@@ -1,5 +1,3 @@
-import praatGlobals = require('./praatGlobals');
-import praatGlobalFunctions = require('./praatGlobalFunctions');
 import { TextDocument, Position, Range, TextEdit, Location, window, CancellationToken, ProviderResult, SymbolInformation, SymbolKind, SymbolTag, workspace, DocumentSymbol, DocumentSymbolProvider } from 'vscode';
 
 export default class PraatDocumentSymbolProvider implements DocumentSymbolProvider {
@@ -59,7 +57,6 @@ export default class PraatDocumentSymbolProvider implements DocumentSymbolProvid
                         kind: SymbolKind.Variable,
                         location: new Location(document.uri, symbolRange)
                     });
-                    window.showInformationMessage(added);
                     // resolve(result);
                     resolve(symbolInfo);
                 }

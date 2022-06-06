@@ -5,6 +5,23 @@ All notable changes to the PraatVSCode extension will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2] - Faster loops and better semantic tokens
+
+### Added
+
+- **Semantic highlighting and definitions for user-defined functions (procedures).** The semantic features already in place for user-defined variables have been extended to user-defined functions.
+- **Semantic highlighting and definitions for user-defined variables in forms.** The semantic features already in place for user-defined variables have been extended to user-defined variables in forms. For instance, the line "optionmenu tier: 3" designates "tier" as a variable and provide semantic highlighting for all occurrences. This line is also registered as a definition.
+
+
+### Changed
+
+- Classes are now listed separately in the globals list.
+- Improvements to syntax highlighting.
+- Autocompletion item provider is faster when checking for user-defined variables.
+- Defintion and semantic token providers are substantially faster (i.e., better loops) and the source code is *cleaner*.
+- Added better parsing of keywords like "pause" and "comment" which should highlight the rest of the line into as a string.
+- Semantic token provider and definition provider now check whether a line is a comment using a function exported from the semantic tokens provider. Comments and form lines (i.e., other than definitions), for instance, are not checked.
+
 ## [0.9.1] - Source Code Cleanup and Customizability
 
 ### Added
