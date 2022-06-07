@@ -41,12 +41,20 @@ export class PraatLegend implements SemanticTokensLegend {
 }
 
 // Function for determining if a line is a comment
-export function isComment(line:string):boolean | null {
+export function isComment(line:string): boolean | null {
 	line = line.trimStart();
 	if (line.length === 0) {
         return null;
     }
 	else if (line.startsWith("#") || line.startsWith(";")) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function isWholeWord(substring:string, host:string): boolean | null {
+	if (substring.trim() === substring) {
 		return true;
 	} else {
 		return false;
@@ -170,7 +178,8 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 							let indices = getIndices(word,callLine,false);
 							indices.forEach(index => {
 								let wordAtFollowing = document.getText(document.getWordRangeAtPosition(new Position(j, index+1)));
-								if (wordAtFollowing === word) {
+								let wordAtPrevious = document.getText(document.getWordRangeAtPosition(new Position(j, index)));
+								if (wordAtFollowing === word && word === wordAtPrevious) {
 									r.push({
 										line: j,
 										startCharacter: index,
@@ -211,11 +220,12 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						let callLine = lines[j];
 						// If word is not embedded in another word...
 						// There MUST be plenty of room for optimization here!
-						if (callLine.includes(iterator + " ") && callLine.includes(" " + iterator) && !isComment(callLine) && shouldHighlight(callLine)) {
+						if (!isComment(callLine) && shouldHighlight(callLine)) {
 							let indices = getIndices(iterator,callLine,false);
 							indices.forEach(index => {
 								let wordAtFollowing = document.getText(document.getWordRangeAtPosition(new Position(j, index+1)));
-								if (wordAtFollowing === iterator) {
+								let wordAtPrevious = document.getText(document.getWordRangeAtPosition(new Position(j, index)));
+								if (wordAtFollowing === iterator && iterator === wordAtPrevious) {
 									r.push({
 										line: j,
 										startCharacter: index,

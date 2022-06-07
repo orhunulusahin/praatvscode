@@ -9,6 +9,8 @@ import PraatDefinitionProvider from './DefinitionProvider';
 import PraatReferenceProvider from './ReferenceProvider';
 import { updatePathIndicator, updateButtons, pathIndicator } from './StatusBar';
 import registerCommands from './Commands';
+import { subscribeToDocumentChanges, refreshDiagnostics } from './Diagnostics';
+import { getVSCodeDownloadUrl } from '@vscode/test-electron/out/util';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -21,10 +23,27 @@ export function activate(context: vscode.ExtensionContext) {
 	// Update status bar if user changes configuration
 	vscode.workspace.onDidChangeConfiguration(changed => {
 		updateButtons();
+		vscode.window.showInformationMessage('PraatVSCode configuration changed');
 	});
 
 	// Register commands
 	registerCommands(context);
+
+	// Test feature
+
+	// const collection = vscode.languages.createDiagnosticCollection("praatDiagnostics");
+	// // context.subscriptions.push(collection);
+
+	// subscribeToDocumentChanges(context, collection);
+
+	// // vscode.window.onDidChangeActiveTextEditor(e => {
+	// // 	vscode.window.showInformationMessage('set');
+	// // });
+	// // Diagnostics
+	// if (vscode.window.activeTextEditor) {
+	// 	// subscribeToDocumentChanges(context, collection);
+	// 	refreshDiagnostics(vscode.window.activeTextEditor?.document, collection);
+	// }
 
 	// Autocompletion
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('praat', new PraatCompletionItemProvider(), '>', '$'));

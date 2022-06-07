@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Semantic highlighting and definitions for user-defined functions (procedures).** The semantic features already in place for user-defined variables have been extended to user-defined functions.
 - **Semantic highlighting and definitions for user-defined variables in forms.** The semantic features already in place for user-defined variables have been extended to user-defined variables in forms. For instance, the line "optionmenu tier: 3" designates "tier" as a variable and provide semantic highlighting for all occurrences. This line is also registered as a definition.
 
-
 ### Changed
 
 - Classes are now listed separately in the globals list.

@@ -276,7 +276,7 @@
           "name": "variable.other.praat" 
         },
         {
-          "match": "\\b(this)",
+          "match": "\\b(this)\\b",
           "name": "variable.language.this.praat",
           "captures": {
             "1": {

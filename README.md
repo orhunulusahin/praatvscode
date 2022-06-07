@@ -1,8 +1,8 @@
-# PraatVSCode (v0.9.1)
+# PraatVSCode (v0.9.2)
 
 ## 1. Summary
 
-    ⚠️ v0.9.1 is a public test version of PraatVSCode!⚠️
+    ⚠️ v0.9.2 is a public test version of PraatVSCode!⚠️
 
 PraatVSCode is an open-source Visual Studio Code extension for Praat users. Its primary aim is to address the shortcomings of the native Praat code editor, which is a plain text editor with a *Run* button.
 
