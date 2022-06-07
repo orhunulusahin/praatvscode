@@ -6,13 +6,17 @@ import { Diagnostic, DiagnosticCollection, languages, Range, Position, Location,
 export const textDiagnostic = "selectObject";
 export const textMention = 'selectObject';
 
-export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: DiagnosticCollection): void {
+export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: DiagnosticCollection) {
 	const diagnostics: Diagnostic[] = [];
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
 		if (lineOfText.text.includes(textDiagnostic)) {
-			diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));
+			if (!lineOfText.text.includes(':')) {
+				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));
+			} else if (lineOfText.text.includes('"') && (lineOfText.text.indexOf('"') === lineOfText.text.lastIndexOf('"'))) {
+				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));	
+			}
 		}
 	}
 
@@ -26,15 +30,15 @@ function createDiagnostic(doc: TextDocument, lineOfText: TextLine, lineIndex: nu
 	// create range that represents, where in the document the word is
 	const range = new Range(lineIndex, index, lineIndex, index + textDiagnostic.length);
 
-	const diagnostic = new Diagnostic(range, "Wanna select smth?",
+	const diagnostic = new Diagnostic(range, "selectObject syntax error",
 		DiagnosticSeverity.Error);
 	diagnostic.code = textMention;
 	diagnostic.source = "PraatVSCode";
-	diagnostic.relatedInformation = [ new DiagnosticRelatedInformation(new Location(doc.uri, range), "Select mistake!") ];
+	diagnostic.relatedInformation = [ new DiagnosticRelatedInformation(new Location(doc.uri, range), "selectObject must take string or variable (object) as input and ':' as operator") ];
 	return diagnostic;
 }
 
-export function subscribeToDocumentChanges(context: ExtensionContext, praatDiagnostics: DiagnosticCollection): void {
+export function subscribeToDocumentChanges(context: ExtensionContext, praatDiagnostics: DiagnosticCollection) {
 	if (window.activeTextEditor) {
 		refreshDiagnostics(window.activeTextEditor.document, praatDiagnostics);
 	}
@@ -55,33 +59,3 @@ export function subscribeToDocumentChanges(context: ExtensionContext, praatDiagn
 	);
 
 }
-
-// export function activate(context: ExtensionContext) {
-
-// 	const collection = languages.createDiagnosticCollection('test');
-// 	if (window.activeTextEditor) {
-// 		updateDiagnostics(window.activeTextEditor.document, collection);
-// 	}
-// 	context.subscriptions.push(window.onDidChangeActiveTextEditor(editor => {
-// 		if (editor) {
-// 			updateDiagnostics(editor.document, collection);
-// 		}
-// 	}));
-// }
-
-// function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
-// 	if (document) {
-// 		collection.set(document.uri, [{
-// 			code: '',
-// 			message: 'cannot assign twice to immutable variable `x`',
-// 			range: new Range(new Position(3, 4), new Position(3, 10)),
-// 			severity: DiagnosticSeverity.Error,
-// 			source: '',
-// 			relatedInformation: [
-// 				new DiagnosticRelatedInformation(new Location(document.uri, new Range(new Position(1, 8), new Position(1, 9))), 'first assignment to `x`')
-// 			]
-// 		}]);
-// 	} else {
-// 		collection.clear();
-// 	}
-// }

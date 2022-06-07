@@ -235,6 +235,9 @@
           "include": "#string-variables"
         },
         {
+          "include": "#predefined-string"
+        },
+        {
           "include": "#string-single-quoted"
         },
         {
@@ -419,7 +422,7 @@
         "name": "support.function.praat"
         },
         {
-          "begin": "(\\s)*?\\b(printline|exit|pause)\\s",
+          "begin": "(\\s)*?\\b(printline|exit|pause|echo|print)\\s",
           "end": "(.)*?$",
           "beginCaptures": {
             "0": { "name": "support.function.praat" }

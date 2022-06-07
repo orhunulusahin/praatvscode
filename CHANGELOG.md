@@ -5,12 +5,18 @@ All notable changes to the PraatVSCode extension will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Upcoming features
+
+- **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
+
 ## [0.9.2] - Faster loops and better semantic tokens
 
 ### Added
 
 - **Semantic highlighting and definitions for user-defined functions (procedures).** The semantic features already in place for user-defined variables have been extended to user-defined functions.
-- **Semantic highlighting and definitions for user-defined variables in forms.** The semantic features already in place for user-defined variables have been extended to user-defined variables in forms. For instance, the line "optionmenu tier: 3" designates "tier" as a variable and provide semantic highlighting for all occurrences. This line is also registered as a definition.
+- **Semantic highlighting and definitions for user-defined variables in forms.** The semantic features already in place for user-defined variables have been extended to user-defined variables in forms. For instance, the line "optionmenu tier: 3" designates "tier" as a variable and provides semantic highlighting for all occurrences. This line is also registered as a definition.
+- **Semantic highlighting and definitions for user-defined variables in loops.** The semantic features already in place for user-defined variables have been extended to user-defined variables in loops. For instance, the line "for i from 2 to 16" designates "i" as a variable and provides semantic highlighting for all occurrences. This line is also registered as a definition.
+
 
 ### Changed
 

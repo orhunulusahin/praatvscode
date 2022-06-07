@@ -56,7 +56,7 @@ No more forgetting what that variable was! Users can use the right-click menu or
 
 ### 2.4 References
 
-Users can browse all calls to a variable using tthe right click menu or the shortcut Shift+F12 (or just F12 if you the user is on a declaration).
+Users can browse all calls to a variable using tthe right click menu or the shortcut Shift+F12.
 
 ![references](/assets/references.gif)
 
