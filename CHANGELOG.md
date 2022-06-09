@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Upcoming features
 
 - **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
+- **Substantially better semantic command of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
+- **Praat object selection tracker.** PraatVSCode will soon be able to tell the user what object or objects would be selected by Praat on a given line of code.
+
+## [0.9.3] - File-System Stability improvements
+
+### Added
+
+- All 3 Praat interface buttons (i.e., "Run in background", "Run in Praat", "Open in Praat") now save documents before sending them to Praat. Thus, the code the user sees will always be the code the user runs.
+
+### Changed
+
+- A bug prevented scripts from being opened or sent to Praat if their file paths contained whitespaces. The issue has now been addressed with shell prompt quoting.
 
 ## [0.9.2] - Faster loops and better semantic tokens
 
@@ -16,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Semantic highlighting and definitions for user-defined functions (procedures).** The semantic features already in place for user-defined variables have been extended to user-defined functions.
 - **Semantic highlighting and definitions for user-defined variables in forms.** The semantic features already in place for user-defined variables have been extended to user-defined variables in forms. For instance, the line "optionmenu tier: 3" designates "tier" as a variable and provides semantic highlighting for all occurrences. This line is also registered as a definition.
 - **Semantic highlighting and definitions for user-defined variables in loops.** The semantic features already in place for user-defined variables have been extended to user-defined variables in loops. For instance, the line "for i from 2 to 16" designates "i" as a variable and provides semantic highlighting for all occurrences. This line is also registered as a definition.
-
 
 ### Changed
 
