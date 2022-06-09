@@ -10,7 +10,6 @@ import PraatReferenceProvider from './ReferenceProvider';
 import { updatePathIndicator, updateButtons, pathIndicator } from './StatusBar';
 import registerCommands from './Commands';
 import { subscribeToDocumentChanges, refreshDiagnostics } from './Diagnostics';
-import { listClasses } from './PraatObjectFunctions';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -28,8 +27,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register commands
 	registerCommands(context);
-
-	listClasses();
 
 	// Test feature
 	// Diagnostics

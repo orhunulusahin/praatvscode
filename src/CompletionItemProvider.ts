@@ -1,6 +1,7 @@
 import { CompletionItemProvider, window, CompletionItem, CompletionItemKind, CancellationToken, TextDocument, Position, Range, TextEdit, workspace, CompletionContext, SnippetString } from 'vscode';
 import praatGlobals = require('./praatGlobals');
 import praatGlobalFunctions = require('./praatGlobalFunctions');
+import praatManuals = require('./PraatObjectFunctions');
 
 export default class PraatCompletionItemProvider implements CompletionItemProvider {
 
@@ -46,6 +47,25 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			return proposal;
 		};
 
+		let createMethodProposal = function (kind: CompletionItemKind, name: string, entry: praatManuals.ObjectMethod | null): CompletionItem {
+			let proposal: CompletionItem = new CompletionItem(name);
+			proposal.kind = kind;
+			if (entry) {
+				let completeSnippet = new SnippetString(entry?.preSnippet);
+				if (entry.description) {
+					proposal.documentation = entry.description;
+				}
+				// if (entry.signature) {
+				// 	proposal.detail = entry.signature;
+				// }
+				if (entry.preSnippet) {
+					// Always insert the full snippet with tab key interface
+					proposal.insertText = completeSnippet;
+				}
+			}
+			return proposal;
+		};
+
 		let matches = (name: string) => {
 			return prefix.length === 0 || name.length >= prefix.length && name.substr(0, prefix.length) === prefix;
 		};
@@ -76,6 +96,17 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 			if (praatGlobals.keywords.hasOwnProperty(keywords) && matches(keywords)) {
 				added[keywords] = true;
 				result.push(createNewProposal(CompletionItemKind.Keyword, keywords, praatGlobals.keywords[keywords]));
+			}
+		}
+		// Include every single built-in Praat function
+		let thisClass: keyof typeof praatManuals.praatMethods;
+		for ( thisClass in praatManuals.praatMethods) {
+			// Looping through classes now 
+			console.log(thisClass);
+			for (let thisMethod in praatManuals.praatMethods[thisClass].praatMethods) {
+				console.log(thisMethod);
+				added[thisMethod] = true;
+				result.push(createMethodProposal(CompletionItemKind.Function, thisMethod, praatManuals.praatMethods[thisClass].praatMethods[thisMethod]));
 			}
 		}
 

@@ -11,10 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Substantially better semantic command of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
 - **Praat object selection tracker.** PraatVSCode will soon be able to tell the user what object or objects would be selected by Praat on a given line of code.
 
-## [0.9.3] - File-System Stability improvements
+## [0.9.3] - Comprehensive autocompletion and stability
 
 ### Added
 
+- **Comprehensive autocompletion.** Every function that is listed in the Praat manuals is now an autocompletion item. Where possible, the selection of a function will output a snippet that can be tab-browsed. However, the list of functions is automatically generated and likely contains errors. The same database of Praat functions will power upcoming features.
 - All 3 Praat interface buttons (i.e., "Run in background", "Run in Praat", "Open in Praat") now save documents before sending them to Praat. Thus, the code the user sees will always be the code the user runs.
 
 ### Changed
