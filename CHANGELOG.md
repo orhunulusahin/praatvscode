@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Upcoming features
 
 - **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
+- **Selection tracker.** PraatVSCode will soon be able to inform the user about what objects are selected on each line.
+
+## [0.9.3] - Function lists
+
+### Added
+
+### Changed
+
+- Shell prompts now surround the script path with quotes to allow execution of scripts that have whitespaces in paths.
 
 ## [0.9.2] - Faster loops and better semantic tokens
 
