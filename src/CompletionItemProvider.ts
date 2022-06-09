@@ -86,8 +86,8 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 				result.push(createNewProposal(CompletionItemKind.Function, globalfunctions, praatGlobalFunctions.globalfunctions[globalfunctions]));
 			}
 		}
-		for (let keywords in praatGlobals.classes) {
-			if (praatGlobals.classes.hasOwnProperty(keywords) && matches(keywords)) {
+		for (let keywords in praatGlobals.praatClasses) {
+			if (praatGlobals.praatClasses.hasOwnProperty(keywords) && matches(keywords)) {
 				added[keywords] = true;
 				result.push(createNewProposal(CompletionItemKind.Class, keywords, praatGlobals.keywords[keywords]));
 			}
@@ -102,9 +102,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 		let thisClass: keyof typeof praatManuals.praatMethods;
 		for ( thisClass in praatManuals.praatMethods) {
 			// Looping through classes now 
-			console.log(thisClass);
 			for (let thisMethod in praatManuals.praatMethods[thisClass].praatMethods) {
-				console.log(thisMethod);
 				added[thisMethod] = true;
 				result.push(createMethodProposal(CompletionItemKind.Function, thisMethod, praatManuals.praatMethods[thisClass].praatMethods[thisMethod]));
 			}

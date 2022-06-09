@@ -44,7 +44,7 @@ export const keywords: IEntries = {
 	}
 };
 
-export const classes: ClassEntries = {
+export const praatClasses: ClassEntries = {
 	LongSound: {
 		description: 'A LongSound object in Praat.',
 		signature: ' ( string object_name ):  object'

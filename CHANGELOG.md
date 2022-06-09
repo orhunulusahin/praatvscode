@@ -5,22 +5,25 @@ All notable changes to the PraatVSCode extension will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Upcoming features
+## Planned/Test features
 
 - **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
 - **Substantially better semantic command of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
-- **Praat object selection tracker.** PraatVSCode will soon be able to tell the user what object or objects would be selected by Praat on a given line of code.
+- **Praat object selection tracker.** PraatVSCode will soon be able to tell the user what object or objects would be selected by Praat on a given line of code. The subsystem for catching "select keywords" is already in place but a deeper understanding of the selected object(s) is lacking. You can go to the extension preferences and enable the "selectionTrackerConfig" setting to demo this feature.
+- **Running scripts with arguments.** It is possible to send scripts to Praat with arguments when dealing with scripts that will only run with certain inputs. The implementation of this solution will make obsolete the "open in praat -> run script" workaround.
 
-## [0.9.3] - Comprehensive autocompletion and stability
+## [0.9.3] - Comprehensive autocompletion, stability and QoL
 
 ### Added
 
-- **Comprehensive autocompletion.** Every function that is listed in the Praat manuals is now an autocompletion item. Where possible, the selection of a function will output a snippet that can be tab-browsed. However, the list of functions is automatically generated and likely contains errors. The same database of Praat functions will power upcoming features.
-- All 3 Praat interface buttons (i.e., "Run in background", "Run in Praat", "Open in Praat") now save documents before sending them to Praat. Thus, the code the user sees will always be the code the user runs.
+- **Comprehensive autocompletion.** Almost every function that is listed in the Praat manual is now an autocompletion item. Where possible, the selection of a function will output a snippet that can be tab-browsed. However, the list of functions is automatically generated and likely contains errors. The same database of Praat functions will power upcoming features.
+- **Autosaving files before running scripts.** All 3 Praat interface buttons (i.e., "Run in background", "Run in Praat", "Open in Praat") now save documents before sending them to Praat. Thus, the code the user sees will always be the code the user runs.
+- **Verbosity settings for status bar items.** With two "run buttons" and a selection tracker on the way, verbosity settings for the status bar items have been introduced. Users with smaller screens or crowded status bars can enjoy shorter text.
 
 ### Changed
 
-- A bug prevented scripts from being opened or sent to Praat if their file paths contained whitespaces. The issue has now been addressed with shell prompt quoting.
+- A bug prevented scripts from being opened or sent to Praat if their file paths contained whitespaces. The issue has been addressed with shell prompt quoting.
+- The three available status bar "run buttons" now have sligtly different icons. Thus, users who opted for the "zero verbosity" configuration for status bar items can distinguish between them.
 
 ## [0.9.2] - Faster loops and better semantic tokens
 

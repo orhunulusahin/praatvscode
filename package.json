@@ -7,7 +7,7 @@
 	"author": {
 	  "name": "Orhun Ulusahin"
 	},
-	"version": "0.9.2",
+	"version": "0.9.3",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
@@ -138,7 +138,25 @@
 						"Opens a script in the Praat code editor but does not run it"
 					],
 					"description": "Select a command to associate with the second Praat run button in the status bar."
-					}
+				},
+				"praatvscode.selectionTrackerConfig": {
+					"type": "boolean",
+					"default": "0",
+					"scope": "resource",
+					"description": "Select whether you want to see the Praat object selection tracker."
+				},
+				"praatvscode.statusBarItemVerbosity": {
+					"type": "string",
+					"default": "Long text",
+					"scope": "resource",
+					"enum": ["Icons only", "Short text", "Long text"],
+					"enumDescriptions": [
+						"Only displays icons for the run buttons and line number for selection tracker",
+						"Displays short descriptions for all status bar items",
+						"Displays long descriptions for all status bar items"
+					],
+					"description": "Select a command to associate with the second Praat run button in the status bar."
+				}
 			}
 		},
 		"snippets": [

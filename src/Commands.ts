@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import { updatePathIndicator } from './StatusBar';
 import os = require('os');
+import provideSelection from './SelectionTracker';
 
 // Fix for weird unicode characters in terminal output readouts
 const outputReplace:any = /[^a-zA-Z0-9!?.:;\n{}\[\] ]/g;	
@@ -205,5 +206,18 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 			}
 		}
 	});
+
+	// Command to go to last selection line
+	// registerCommandNice(context, 'praatvscode.getPraatSelection', () => {
+	// 	if (vscode.window.activeTextEditor) {
+	// 		provideSelection(
+	// 			vscode.window.activeTextEditor.document,
+	// 			new vscode.Position(
+	// 				vscode.window.activeTextEditor.selection.active.line,
+	// 				vscode.window.activeTextEditor.selection.active.character
+	// 			)
+	// 		);
+	// 	}
+	// });
 }
 

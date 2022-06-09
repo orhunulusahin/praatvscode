@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Praat object function list A
 
-import { classes } from "./praatGlobals";
+import { praatClasses } from "./praatGlobals";
 
 // Create string array of Praat Classes
 const classList:string[] = [];
-for (let praatClass in classes) {
+for (let praatClass in praatClasses) {
     if (praatClass !== "all") {
         classList.push(praatClass);
     }
 }
-const enum OperatorType {
+
+export const enum PraatOperatorType {
     None = 0,
     Colon = 1,
     Ellipsis = 2
@@ -20,9 +21,9 @@ export interface ObjectMethod {
     name: string, // Name of this function
     class: string[], // Which class(es) implement this method
     arguments: {argIndex:number, argName:string} | {}, // List of arguments for method
-    argCount?: number, // How many arguments does this method take?
+    argCount: number, // How many arguments does this method take?
     preSnippet: string, // What will be provided to the completion item provider that will create a snippet
-    operator?: OperatorType, // What operator the method requires
+    operator?: PraatOperatorType, // What operator the method requires
     argSeparator?: string[], // What character(s) separates these arguments
     description?: string, // What the user will see in documentation
     signature?: string, // What the hover window will display for the "formula" of this method
