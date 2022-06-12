@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import PraatCompletionItemProvider from './completionItemProvider';
+import PraatCompletionItemProvider from './CompletionItemProvider';
 import PraatHoverProvider from './HoverProvider';
 import PraatDocumentSymbolProvider from './SymbolProvider';
 import PraatSemanticHighlighter, { PraatLegend } from './SemanticTokensProvider';
