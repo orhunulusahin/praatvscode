@@ -7,7 +7,7 @@
 	"author": {
 	  "name": "Orhun Ulusahin"
 	},
-	"version": "0.9.3",
+	"version": "0.9.4",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
@@ -143,7 +143,7 @@
 					"type": "boolean",
 					"default": "0",
 					"scope": "resource",
-					"description": "Select whether you want to see the Praat object selection tracker."
+					"description": "Select whether you want to see the Praat object selection tracker. (Test feature)"
 				},
 				"praatvscode.statusBarItemVerbosity": {
 					"type": "string",
@@ -155,7 +155,7 @@
 						"Displays short descriptions for all status bar items",
 						"Displays long descriptions for all status bar items"
 					],
-					"description": "Select a command to associate with the second Praat run button in the status bar."
+					"description": "Select the verbosity of PraatVSCode status bar items."
 				}
 			}
 		},

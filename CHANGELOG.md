@@ -9,8 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
 - **Substantially better semantic command of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
-- **Praat object selection tracker.** PraatVSCode will soon be able to tell the user what object or objects would be selected by Praat on a given line of code. The subsystem for catching "select keywords" is already in place but a deeper understanding of the selected object(s) is lacking. You can go to the extension preferences and enable the "selectionTrackerConfig" setting to demo this feature.
 - **Running scripts with arguments.** It is possible to send scripts to Praat with arguments when dealing with scripts that will only run with certain inputs. The implementation of this solution will make obsolete the "open in praat -> run script" workaround.
+- **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
+
+## [0.9.4] - Selection provider and stability improvements
+
+### Added
+
+- **Praat selection provider.** You can now go to extension settings and enable the "selection tracker" to see what object(s) you have selected in Praat on a given line. The new item on the status bar will display a list of selected objects and hovering on the item will display the line numbers of selection(s).
+- **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions are now registered in the Praat language grammar.
+
+### Changed
+
+- The description of the praatvscode.selectionProviderConfig was a copy of the description of praatvscode.runButtonTwo. It's now correct.
 
 ## [0.9.3] - Comprehensive autocompletion, stability and QoL
 

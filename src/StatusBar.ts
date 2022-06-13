@@ -134,16 +134,47 @@ export function updateTracker() {
 
 	if (trackerEnabled) {
 		if (vscode.window.activeTextEditor) {
-			let lastSelection = provideSelection(
+			let selection = provideSelection(
 				vscode.window.activeTextEditor.document,
 				new vscode.Position(
 					vscode.window.activeTextEditor.selection.active.line,
 					vscode.window.activeTextEditor.selection.active.character
 				)
 			);
-			selectionTracker.tooltip = "Last selection at line " + lastSelection;
-			selectionTracker.text = preText + lastSelection;
-			
+			if (selection.length === 0) {
+				selectionTracker.tooltip = "No selection";
+				selectionTracker.text = preText + "null";
+			}
+			else if (selection.length === 1) {
+				selectionTracker.tooltip = "Last selection at line " + (selection[0].lineNumber+1);
+				selectionTracker.text = preText;
+				if (selection[0].selectionType) {
+					selectionTracker.text = selectionTracker.text.concat(" "+selection[0].selectionType);
+				}
+				if (selection[0].selectedObject) {
+					selectionTracker.text = selectionTracker.text.concat(" "+selection[0].selectedObject);
+				}
+			} else {
+				let selectionTooltipText = 'Last selections at lines ';
+				let selectionText = preText;
+				selection.forEach(selectItem => {
+					if (selection.indexOf(selectItem) === selection.length-1) {
+						selectionTooltipText = selectionTooltipText.slice(0,-2).concat(" & " + (selectItem.lineNumber+1));
+						if (selectItem.selectedObject) {
+							selectionText = selectionText.slice(0,-2).concat(" & " +selectItem.selectedObject);
+						}
+					} else {
+						selectionTooltipText = selectionTooltipText.concat((selectItem.lineNumber+1) + ", ");
+						if (selectItem.selectedObject) {
+							selectionText = selectionText.concat(selectItem.selectedObject + ", ");
+						}
+					}
+				});
+				selectionTracker.tooltip = selectionTooltipText;
+				selectionTracker.text = selectionText;
+				// console.log(selectionTooltipText);
+				// console.log(selectionText);
+			}
 		}
 		selectionTracker.show();
 	}

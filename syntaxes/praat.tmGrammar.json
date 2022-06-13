@@ -1,9 +1,8 @@
 {
   "scopeName": "source.praat",
   "name": "Praat",
-  "patterns": [ 
-    { 
-      "include": "#language" 
+  "patterns": [{
+      "include": "#language"
     },
     {
       "include": "#paren-expression"
@@ -11,8 +10,7 @@
   ],
   "repository": {
     "interpolation": {
-      "patterns": [
-        {
+      "patterns": [{
           "match": "\\\\[0-7]{1,3}",
           "name": "constant.character.escape.octal.praat"
         },
@@ -46,8 +44,7 @@
         }
       },
       "name": "string.quoted.double.praat",
-      "patterns": [
-        {
+      "patterns": [{
           "include": "#interpolation"
         },
         {
@@ -73,12 +70,10 @@
         }
       },
       "name": "variable.string.quoted.single.praat",
-      "patterns": [
-        {
-          "match": "\\\\[\\\\']",
-          "name": "constant.character.escape.praat"
-        }
-      ]
+      "patterns": [{
+        "match": "\\\\[\\\\']",
+        "name": "constant.character.escape.praat"
+      }]
     },
     "regex-double-quoted": {
       "begin": "(?x)\"/ (?= (\\\\.|[^\"/])++/[imsxeADSUXu]*\" )",
@@ -94,8 +89,7 @@
         }
       },
       "name": "string.regexp.double-quoted.praat",
-      "patterns": [
-        {
+      "patterns": [{
           "comment": "Escaped from the regexp – there can also be 2 backslashes (since 1 will escape the first)",
           "match": "(\\\\){1,2}[.$^\\[\\]{}]",
           "name": "constant.character.escape.regex.praat"
@@ -124,11 +118,9 @@
           },
           "end": "\\]",
           "name": "string.regexp.character-class.praat",
-          "patterns": [
-            {
-              "include": "#interpolation"
-            }
-          ]
+          "patterns": [{
+            "include": "#interpolation"
+          }]
         },
         {
           "match": "[$^+*]",
@@ -150,8 +142,7 @@
         }
       },
       "name": "string.regexp.single-quoted.praat",
-      "patterns": [
-        {
+      "patterns": [{
           "captures": {
             "1": {
               "name": "punctuation.definition.arbitrary-repetition.praat"
@@ -172,11 +163,9 @@
           },
           "end": "\\]",
           "name": "string.regexp.character-class.praat",
-          "patterns": [
-            {
-              "include": "#single_quote_regex_escape"
-            }
-          ]
+          "patterns": [{
+            "include": "#single_quote_regex_escape"
+          }]
         },
         {
           "match": "[$^+*]",
@@ -198,17 +187,22 @@
       "begin": "#|;",
       "end": "$",
       "beginCaptures": {
-        "0": { "name": "punctuation.definition.comment.praat" }
+        "0": {
+          "name": "punctuation.definition.comment.praat"
+        }
       },
       "name": "comment.line.number-sign.praat"
     },
     "console": {
-      "patterns":[
-        {
+      "patterns": [{
           "match": "\\b(write|append)((Info|File)(Line)?)\\b",
           "captures": {
-            "1": { "name": "support.function.praat" },
-            "2": { "name": "keyword.variable.language.praat" }
+            "1": {
+              "name": "support.function.praat"
+            },
+            "2": {
+              "name": "keyword.variable.language.praat"
+            }
           },
           "name": "support.function.praat"
         },
@@ -216,10 +210,14 @@
           "begin": "\\b(clear)",
           "end": "(info)\\b",
           "beginCaptures": {
-            "1": { "name": "support.function.praat" }
+            "1": {
+              "name": "support.function.praat"
+            }
           },
           "endCaptures": {
-            "1": { "name": "keyword.variable.language.praat" }
+            "1": {
+              "name": "keyword.variable.language.praat"
+            }
           },
           "name": "support.function.praat"
         },
@@ -230,8 +228,7 @@
       ]
     },
     "strings": {
-      "patterns": [
-        { 
+      "patterns": [{
           "include": "#string-variables"
         },
         {
@@ -259,24 +256,23 @@
       "match": "^(\\b|\\s|\\t)*?([a-z])(?i)((?:_?[a-z0-9_]+))?(\\b|\\s)*?\\=",
       "captures": {
         "1": {
-          "name": "variable.other.praat" 
+          "name": "variable.other.praat"
         },
         "2": {
-          "name": "variable.other.praat" 
+          "name": "variable.other.praat"
         },
         "3": {
-          "name": "variable.other.praat" 
+          "name": "variable.other.praat"
         },
         "4": {
-          "name": "keyword.operator.praat" 
+          "name": "keyword.operator.praat"
         }
       }
     },
     "string-variables": {
-      "patterns": [
-        {
+      "patterns": [{
           "match": "(\\b|\\s|\\t)*?[a-z](?i)(?:_?[a-z0-9_]+)\\$(\\b|\\s)?",
-          "name": "variable.other.praat" 
+          "name": "variable.other.praat"
         },
         {
           "match": "\\b(this)\\b",
@@ -290,22 +286,20 @@
       ]
     },
     "proc-declaration": {
-      "patterns": [
-        {
-          "match": "(\\b|\\s|\\t)*?(procedure)\\s([a-z][a-zA-Z0-9_]+)(\\:)?(\\b|\\s)?",
-          "captures": {
-            "2": {
-              "name": "keyword.control.praat"
-            },
-            "3": {
-              "name": "support.function.praat"
-            },
-            "4": {
-              "name": "support.function.praat"
-            }
+      "patterns": [{
+        "match": "(\\b|\\s|\\t)*?(procedure)\\s([a-z][a-zA-Z0-9_]+)(\\:)?(\\b|\\s)?",
+        "captures": {
+          "2": {
+            "name": "keyword.control.praat"
+          },
+          "3": {
+            "name": "support.function.praat"
+          },
+          "4": {
+            "name": "support.function.praat"
           }
         }
-      ]
+      }]
     },
     "class-builtin": {
       "match": "\\b((Long)?Sound|Text(Grid|Tier)|Formant(Grid)?|Strings|all|Intensity(Tier)?|Pitch(Tier)?|PointProcess|Table(OfReal)?|Matrix|Polygon|Distributions|PairDistribution|Permutation|ParamCurve|Harmonicity|Electroglottogram|Spectrum|Ltas|LPC|Cepstrum|(LF|MF)?CC|Excitation(s)?|Cochleagram|Manipulation|Duration(Tier)?|Speaker|Articulation|VocalTract|FFNet|PatternList|Categories|Eigen|Polynomial|Roots|ChebyshevSeries|LegendreSeries|(I|M)Spline|Covariance|Confusion|Discriminant|ExperimentMFC|PCA|Correlation|ClassificationTable|SSCP|DTW|Configuration|Dissimilarity|Similarity|Distance|ScalarProduct|ContingencyTable|OTGrammar|WordList|SpellingChecker)\\b",
@@ -332,8 +326,8 @@
       "name": "support.function.praat"
     },
     "sound-annotate-function": {
-        "match": "(\\s)*?\\b(To TextGrid( \\((silences|voice activity)\\))?)",
-        "name": "support.function.praat"
+      "match": "(\\s)*?\\b(To TextGrid( \\((silences|voice activity)\\))?)",
+      "name": "support.function.praat"
     },
     "sound-periodicity-function": {
       "match": "(\\s)*?\\b(To (Manipulation|Pitch( \\((ac|cc|SPINET|shs)\\))?|PointProcess \\((periodic\\, cc|periodic\\, peaks|extrema|zeroes)\\)|Harmonicity \\(cc|ac|gne\\)|PowerCepstrogram)|Autocorrelate)",
@@ -394,7 +388,9 @@
     "sound-save-function": {
       "match": "(\\s)*?\\b((Save as|Write to) ((short)? text|binary|((24|32)\\-bit )?WAV|AIFF|AIFC|Next\\/Sun|NIST|FLAC|Kay|raw (8\\-bit (un)?signed|(16|24|32)\\-bit (big|little)\\-endian)) file|Append to existing sound file)\\b",
       "captures": {
-        "2": { "name": "support.function.praat"}
+        "2": {
+          "name": "support.function.praat"
+        }
       }
     },
     "other-save-function": {
@@ -408,7 +404,9 @@
     "select-function": {
       "match": "(\\s)*?\\b(select(Object| all)?|plus(Object)?|minus(Object)?|Remove|removeObject|Concatenate|Rename|Selected(\\$)?|Info|Inspect|Copy)\\b",
       "captures": {
-        "2": { "name": "support.function.praat"}
+        "2": {
+          "name": "support.function.praat"
+        }
       }
     },
     "types-builtin": {
@@ -416,39 +414,50 @@
       "name": "storage.type.praat"
     },
     "interface-function": {
-      "patterns": [
-        {
-        "match": "\\b(pauseScript|beginPause|endPause|runSystem(_nocheck)?)\\b",
-        "name": "support.function.praat"
+      "patterns": [{
+          "match": "\\b(pauseScript|beginPause|endPause|runSystem(_nocheck)?)\\b",
+          "name": "support.function.praat"
         },
         {
           "begin": "(\\s)*?\\b(printline|exit|pause|echo|print)\\s",
           "end": "(.)*?$",
           "beginCaptures": {
-            "0": { "name": "support.function.praat" }
+            "0": {
+              "name": "support.function.praat"
+            }
           },
           "endCaptures": {
-            "0": { "name": "string.punctuation.praat" }
+            "0": {
+              "name": "string.punctuation.praat"
+            }
           }
         },
         {
           "begin": "(\\s)*?\\bform\\s",
           "end": "(.)*?$",
           "beginCaptures": {
-            "0": { "name": "keyword.control.praat" }
+            "0": {
+              "name": "keyword.control.praat"
+            }
           },
           "endCaptures": {
-            "0": { "name": "string.punctuation.praat" }
+            "0": {
+              "name": "string.punctuation.praat"
+            }
           }
         },
         {
           "begin": "(\\s)*?\\bcomment\\s",
           "end": "(.)*?$",
           "beginCaptures": {
-            "0": { "name": "storage.type.praat" }
+            "0": {
+              "name": "storage.type.praat"
+            }
           },
           "endCaptures": {
-            "0": { "name": "string.punctuation.praat" }
+            "0": {
+              "name": "string.punctuation.praat"
+            }
           }
         }
       ]
@@ -475,8 +484,7 @@
       "name": "keyword.operator.key.praat"
     },
     "math": {
-      "patterns": [
-        {
+      "patterns": [{
           "match": "\\-|\\^|\\*|\\/|\\+|(\\<\\>)|\\<|\\>|(\\<\\=)|(\\>\\=)",
           "name": "keyword.operator.key.praat"
         },
@@ -487,9 +495,8 @@
       ]
     },
     "operators": {
-      "patterns": [
-        {
-          "comment": "Text-based operators are colored to signal their pre-defined functions to the user.", 
+      "patterns": [{
+          "comment": "Text-based operators are colored to signal their pre-defined functions to the user.",
           "match": "\\.\\.\\.\\s|\\b(\\:\\s|not|and|or|div|mod|yes|no|self)\\b",
           "name": "constant.language.operator.praat"
         },
@@ -500,25 +507,28 @@
           "include": "#assignment"
         }
       ]
-      
+
     },
     "paren-expression": {
       "begin": "\\(",
       "end": "\\)",
       "beginCaptures": {
-        "0": { "name": "punctuation.paren.open.praat" }
+        "0": {
+          "name": "punctuation.paren.open.praat"
+        }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.paren.close.praat" }
+        "0": {
+          "name": "punctuation.paren.close.praat"
+        }
       },
       "name": "expression.group",
-      "patterns": [
-        {"include": "#language"}
-      ]
+      "patterns": [{
+        "include": "#language"
+      }]
     },
     "language": {
-      "patterns": [
-        {
+      "patterns": [{
           "include": "#comments"
         },
         {
@@ -582,7 +592,7 @@
           "include": "#sound-annotate-function"
         },
         {
-          "include":"#sound-periodicity-function"
+          "include": "#sound-periodicity-function"
         },
         {
           "include": "#sound-spectrum-function"
@@ -642,6 +652,6 @@
           "include": "#numbers"
         }
       ]
-      }
     }
+  }
 }
