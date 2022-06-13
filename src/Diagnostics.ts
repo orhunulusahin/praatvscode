@@ -9,18 +9,19 @@ export const textMention = 'selectObject';
 export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: DiagnosticCollection) {
 	const diagnostics: Diagnostic[] = [];
 
-	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
-		const lineOfText = doc.lineAt(lineIndex);
-		if (lineOfText.text.includes(textDiagnostic)) {
-			if (!lineOfText.text.includes(':')) {
-				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));
-			} else if (lineOfText.text.includes('"') && (lineOfText.text.indexOf('"') === lineOfText.text.lastIndexOf('"'))) {
-				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));	
+	if (doc.languageId === "praat") {
+		for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
+			const lineOfText = doc.lineAt(lineIndex);
+			if (lineOfText.text.includes(textDiagnostic)) {
+				if (!lineOfText.text.includes(':')) {
+					diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));
+				} else if (lineOfText.text.includes('"') && (lineOfText.text.indexOf('"') === lineOfText.text.lastIndexOf('"'))) {
+					diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex));	
+				}
 			}
 		}
+		praatDiagnostics.set(doc.uri, diagnostics);
 	}
-
-	praatDiagnostics.set(doc.uri, diagnostics);
 }
 
 function createDiagnostic(doc: TextDocument, lineOfText: TextLine, lineIndex: number): Diagnostic {
