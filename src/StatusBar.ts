@@ -7,6 +7,7 @@ import provideSelection from './SelectionTracker';
 export var pathIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
 pathIndicator.name = 'Praat path indicator';
 pathIndicator.command = 'praatvscode.definePath';
+var pathValid: boolean;
 
 // Create status bar items
 const runButtonOne = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 3);
@@ -81,42 +82,46 @@ export function updateButtons() {
 		runButtonTwo.name = commandArraysLong[buttonTwoIndex][2];
 		runButtonTwo.tooltip = commandArraysLong[buttonTwoIndex][3];
 	}
-	runButtonOne.show();
-	runButtonTwo.show();
 
-	// Hide buttons if language isn't Praat
-	// if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
-	// 	runButtonOne.hide();
-	// 	runButtonTwo.hide();
-	// }
+	// Hide buttons if language isn't Praat or if path isn't set yet
+	if (pathValid === undefined || pathValid === false) {
+		runButtonOne.hide();
+		runButtonTwo.hide();
+	}
+	else if (vscode.window.activeTextEditor?.document.languageId === "praat") {
+		runButtonOne.show();
+		runButtonTwo.show();
+	}
+	else {
+		runButtonOne.hide();
+		runButtonTwo.hide();
+	}
 }
 
 // Functon to update path indicator based on whether user has provided Praat executable
 export function updatePathIndicator(context: vscode.ExtensionContext) {
 	var praatPath:string = context.globalState.get('praatpath','');
-	praatPath = context.globalState.get('praatpath',"");
-	pathIndicator.hide();
 	if (praatPath === undefined || praatPath === "") {
 		pathIndicator.text = '$(new-folder) Praat path not set';
 		pathIndicator.tooltip = 'Click to set a path and run scripts';
 		pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
-		runButtonOne.hide();
-		runButtonTwo.hide();
+		pathValid = false;
 	} else {
 		pathIndicator.text = '$(folder-active)';
 		pathIndicator.tooltip = 'Click to change Praat path';
 		pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.remoteBackground');
-		runButtonOne.show();
-		runButtonTwo.show();
+		pathValid = true;
 	}
-	pathIndicator.show();
 	// Hide path indicator if file isn't Praat script
-	// if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
-	// 	pathIndicator.hide();
-	// }
+	if (vscode.window.activeTextEditor?.document.languageId === "praat") {
+		pathIndicator.show();
+	}
+	else {
+		pathIndicator.hide();
+	}
 }
 
-// Function to 
+// Function to update Selection Tracker
 export function updateTracker() {
 	var config = vscode.workspace.getConfiguration('praatvscode');
 	var trackerEnabled:any = config.get('selectionTrackerConfig');

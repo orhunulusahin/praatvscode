@@ -110,6 +110,10 @@
 			{
 				"command": "editor.action.goToReferences",
 				"title": "Peek references to this symbol"
+			},
+			{
+				"command": "praatvscode.testArgs",
+				"title": "List arguments"
 			}
 		],
 		"configuration": {

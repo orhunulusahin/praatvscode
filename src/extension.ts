@@ -15,30 +15,32 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Run status bar stuff once when the extension activates
 	updatePathIndicator(context);
-
-	// Register status bar items on the first run
 	updateButtons();
 	updateTracker();
 
 	// Update status bar if user changes configuration
-	vscode.workspace.onDidChangeConfiguration(changed => {
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(changed => {
 		vscode.window.showInformationMessage('PraatVSCode config changed!');
+		updatePathIndicator(context);
 		updateButtons();
 		updateTracker();
-	});
+	}));
 	
-	// Track selection or file changes for selection tracker
+	// Track selection or file changes for status bar items
+	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(changed => {
+		updatePathIndicator(context);
+	}));
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(updateTracker));
 	context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection(updateTracker));
+	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(updateButtons));
 
 	// Register commands
+	// Defined in Commands.ts
 	registerCommands(context);
 
 	// Test feature
 	// Diagnostics
 	const collection = vscode.languages.createDiagnosticCollection("praatDiagnostics");
-	// context.subscriptions.push(collection);
-
 	subscribeToDocumentChanges(context, collection);
 	if (vscode.window.activeTextEditor) {
 		refreshDiagnostics(vscode.window.activeTextEditor?.document, collection);

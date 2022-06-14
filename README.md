@@ -1,17 +1,18 @@
-# PraatVSCode (v0.9.3)
+# PraatVSCode (v0.9.4)
 
 ## 1. Summary
 
-    ⚠️ v0.9.3 is a public test version of PraatVSCode! ⚠️
-    See CHANGELOG.md for more details and upcoming/test features.
+    ⚠️ v0.9.4 is a public test version of PraatVSCode! ⚠️
+    See CHANGELOG.md for details and upcoming/test features.
 
 PraatVSCode is an open-source Visual Studio Code extension for Praat users. Its primary aim is to address the shortcomings of the native Praat code editor, which is a plain text editor with a *Run* button.
 
 PraatVSCode:
 
-- Registers Praat as a valid programming language for VSCode
-- Marks Praat files with appropriate icons
-- Does syntax highlighting
+- Registers Praat as a valid programming language for VSCode and marks Praat files with appropriate icons
+- Provides syntax highlighting
+- Provides semantic highlighting (i.e., including user-defined variables and functions)
+- Tracks Praat's object selection
 - Provides autocompletion suggestions/search
 - Provides an array of snippets for *code that writes itself*
 
@@ -49,17 +50,20 @@ As of version 0.9.0, PraatVSCode provides semantic highlighting for user-defined
 
 ![semantic_highlighter](/assets/semantic_hi.gif)
 
-### 2.3 Definitions
+### 2.3 Definitions & References
 
 No more forgetting what that variable was! Users can use the right-click menu or the shortcut F12 to go to the definition/declaration of a variable.
 
 ![definitions](/assets/definitions.gif)
 
-### 2.4 References
-
 Users can browse all calls to a variable using tthe right click menu or the shortcut Shift+F12.
 
 ![references](/assets/references.gif)
+
+### 2.4 Praat Object Selection
+
+As of version 0.9.4, a status bar tool for tracking various Praat selection function can be enabled.
+
 
 ### 2.5 Autocompletion
 

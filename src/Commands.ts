@@ -6,6 +6,7 @@ import * as cp from 'child_process';
 import { updatePathIndicator } from './StatusBar';
 import os = require('os');
 import provideSelection from './SelectionTracker';
+import sendArguments from './SendArguments';
 
 // Fix for weird unicode characters in terminal output readouts
 const outputReplace:any = /[^a-zA-Z0-9!?.:;\n{}\[\] ]/g;	
@@ -98,22 +99,32 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
-			if (vscode.window.activeTextEditor?.document.uri.fsPath !== undefined) {
+			if (vscode.window.activeTextEditor.document.uri.fsPath) {
 				vscode.window.activeTextEditor.document.save().then((saved) => {
-					if (os.type() === 'Windows_NT') {
-						cp.exec(praatPath +'\\Praat.exe --send "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
-							vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
-						});
-					} else if (os.type() === 'Linux') {
-						cp.exec(praatPath +'/praat --send "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
-							vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
-						});
-					} else if (os.type() === 'Darwin') {
-						cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --send "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
-							vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
-						});
-					} else {
-						vscode.window.showInformationMessage('Fatal error! Trouble recognizing OS.');
+					if (vscode.window.activeTextEditor?.document.uri.fsPath) {
+						if (os.type() === 'Windows_NT') {
+							console.log(praatPath +'\\Praat.exe --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)));
+							cp.exec(praatPath +'\\Praat.exe --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
+								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+								praatOut.appendLine(stdout.replace(outputReplace, ""));
+								praatOut.appendLine(stderr.replace(outputReplace, ""));
+								if (error) {
+									praatOut.appendLine('The script did not run.\nPraat sent:\n' + error);
+								} else {
+									praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + stdout.replace(outputReplace, "") + ' ' + stderr.replace(outputReplace, ""));
+								}
+							});
+						} else if (os.type() === 'Linux') {
+							cp.exec(praatPath +'/praat --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '"', (error, stdout, stderr) => {
+								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+							});
+						} else if (os.type() === 'Darwin') {
+							cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '"', (error, stdout, stderr) => {
+								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+							});
+						} else {
+							vscode.window.showInformationMessage('Fatal error! Trouble recognizing OS.');
+						}
 					}
 				});
 			} else {
@@ -204,6 +215,12 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 			} else {
 				vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
 			}
+		}
+	});
+
+	registerCommandNice(context, 'praatvscode.testArgs', () => {
+		if (vscode.window.activeTextEditor) {
+			console.log(sendArguments(vscode.window.activeTextEditor.document));
 		}
 	});
 

@@ -29,11 +29,11 @@ interface IParsedToken {
 	tokenModifiers: string[];
 }
 
-interface PraatUserVariable {
-	name: string;
-	type?: string;
-	value?: any;
-}
+// interface PraatUserVariable {
+// 	name: string;
+// 	type?: string;
+// 	value?: any;
+// }
 
 export class PraatLegend implements SemanticTokensLegend {
 	tokenTypes: string[] = tokenTypesLegend;
@@ -53,13 +53,13 @@ export function isComment(line:string): boolean | null {
 	}
 }
 
-function isWholeWord(substring:string, host:string): boolean | null {
-	if (substring.trim() === substring) {
-		return true;
-	} else {
-		return false;
-	}
-}
+// function isWholeWord(substring:string, host:string): boolean | null {
+// 	if (substring.trim() === substring) {
+// 		return true;
+// 	} else {
+// 		return false;
+// 	}
+// }
 
 // Words used for catching variable declarations in forms
 const enumFormWords = ['optionmenu','boolean'];
