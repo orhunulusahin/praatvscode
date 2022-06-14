@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The description of the praatvscode.selectionProviderConfig was a copy of the description of praatvscode.runButtonTwo. It's now correct.
+- Diagnostics are only provided if the active document's language is set to Praat.
 
 ## [0.9.3] - Comprehensive autocompletion, stability and QoL
 

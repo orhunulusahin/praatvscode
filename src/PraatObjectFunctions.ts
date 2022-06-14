@@ -37,7 +37,7 @@ export interface MethodList {
     [methodName:string]: ObjectMethod
 }
 export interface PraatClass {
-    praatMethods:MethodList
+    praatMethods: MethodList
     methodCount: number,
     methods: { methodIndex:number, methodName:string} | {}
 }
