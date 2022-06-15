@@ -7,7 +7,7 @@
 	"author": {
 	  "name": "Orhun Ulusahin"
 	},
-	"version": "0.9.4",
+	"version": "0.10.0",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
@@ -110,10 +110,6 @@
 			{
 				"command": "editor.action.goToReferences",
 				"title": "Peek references to this symbol"
-			},
-			{
-				"command": "praatvscode.testArgs",
-				"title": "List arguments"
 			}
 		],
 		"configuration": {
@@ -133,7 +129,7 @@
 				},
 				"praatvscode.runButtonTwo": {
 					"type": "string",
-					"default": "praatvscode.openInPraat",
+					"default": "praatvscode.runInPraat",
 					"scope": "resource",
 					"enum": ["praatvscode.runScript", "praatvscode.runInPraat", "praatvscode.openInPraat"],
 					"enumDescriptions": [

@@ -20,6 +20,7 @@ function quotify(stringList:string[]): string[] {
     return newList;
 }
 
+// Find the end of a form
 function endOfForm(doc:TextDocument, startLine: number): number {
     for (let i = startLine+1; i < doc.lineCount; i++) {
         if (doc.lineAt(i).text.trimStart().startsWith('endform')) {
@@ -29,6 +30,7 @@ function endOfForm(doc:TextDocument, startLine: number): number {
     return doc.lineCount;
 }
 
+// Find the end of an enum (optionmenu)
 function endOfOptionmenu(doc:TextDocument, startLine: number): number {
     for (let i = startLine+1; i < doc.lineCount; i++) {
         if (!doc.lineAt(i).text.trimStart().startsWith('option')) {
@@ -37,7 +39,9 @@ function endOfOptionmenu(doc:TextDocument, startLine: number): number {
     }
     return doc.lineCount;
 }
+
 // Get form inputs from Praat script
+// Return them in a form appropriate for the command line
 export default function sendArguments(document: TextDocument): string {
 
     var args:string[] = [];
@@ -50,7 +54,7 @@ export default function sendArguments(document: TextDocument): string {
 
             // Now loop within form for all inputs
             let formLine:string = '';
-            let inputCount = 0;
+            // let inputCount = 0;
             for (let j = i+1; j < endOfForm(document,i); j++) {
 
                 formLine = document.lineAt(j).text;
@@ -62,39 +66,34 @@ export default function sendArguments(document: TextDocument): string {
                     // That also happens to be the end of the line if you trim the spaces
                     let argRange = document.getWordRangeAtPosition(new Position(j, formLine.trimEnd().length));
                     let argValue = document.getText(argRange);
-                    // console.log(argValue);
 
                     // For reasons unknown to mortals, Praat wants enum (optionmenu) inputs
                     // QUOTED, AS STRINGS, AND AS VALUES RATHER THAN KEYS
                     // Solution:
                     if ((formLine).trimStart().startsWith("optionmenu")) {
                         let optionList:string[] = [];
-                        console.log('optmenu ends at : '+ endOfOptionmenu(document,j))
                         for (let k = j+1; k < endOfOptionmenu(document,j); k++) {
                             let optLine = document.lineAt(k).text;
+                            // Get rid of the word "option" and that's our value!
                             let optValue = optLine.trim().substring(6).trim();
                             optionList.push(optValue);
-                            console.log(optionList);
                         }
-                        // Select whatever option would be selected by number
-                        // Adjust index by 1: Praat counts from 1
+                        // Select whatever option would be selected by Praat optionmenu number
+                        // Adjust index by -1: Praat counts from 1!
                         argValue = optionList[Number(argValue)-1];
 
                     }
                     args.push(argValue);
-                    inputCount++;
+                    // inputCount++;
                 }
-
                 if (formLine.includes("endform")) {
                     break;
                 }
             }
-            // console.log(inputCount);
         }
     }
 
-    
-    
+    // Pass empty string if no arguments are declared
     if (args === []) {
         return '';
     }

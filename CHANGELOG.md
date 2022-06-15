@@ -10,14 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
 - **Substantially better semantic command of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
 - **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
+- **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
 
-## [0.9.4] - Selection provider and stability improvements
+## [0.10.0] New major features and stability improvements
 
 ### Added
 
-- **Running scripts with arguments.** It is now possible to send scripts to Praat with arguments when dealing with scripts that will only run with certain inputs (e.g., scripts that contain forms). The implementation of this feature should make obsolete the "open in praat -> run script" workaround. The user does not need to do anything extra. PraatVSCode will detect if the current script contains a form field and will fetch all values that would go into the form.
+- **Running scripts with arguments.** It is now possible to send scripts to Praat with arguments when dealing with scripts that will only run with certain inputs (e.g., scripts that contain forms).
+    - The implementation of this feature should replace the "open in praat -> run script" workaround.
+    - The user does not need to do anything extra. PraatVSCode will simply detect if the current script contains a form field and will fetch all values that would go into the form.
+- **Praat error handling in VSCode.** The PraatVSCode emulation of the Praat output window now displays errors that would otherwise be displayed in pop-up windows while running through Praat. Thus, users can now obtain information about what went wrong with the script and what line failed to execute without leaving the development environment.
 - **Praat selection provider.** You can now go to extension settings and enable the "selection tracker" to see what object(s) you have selected in Praat on a given line. The new item on the status bar will display a list of selected objects and hovering on the item will display the line numbers of selection(s).
-- **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions are now registered in the Praat language grammar.
 
 ### Changed
 
@@ -25,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Diagnostics are only provided if the active document's language is set to Praat.
 - Status bar items from PraatVSCode are now only visible if the active document's language is set to Praat.
 - Status bar items update more efficiently. Instead of momentarily hiding the status bar items during value changes, the extension now writes changes instantly.
+- In line with the new script running improvements, the default buttons have been changed to "Run in background" and "Run in Praat"
 
 ## [0.9.3] - Comprehensive autocompletion, stability and QoL
 
