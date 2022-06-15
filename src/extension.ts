@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerReferenceProvider('praat', new PraatReferenceProvider()));
 }
 
-// this method is called when the extension is deactivated
+// This method is called when the extension is deactivated
 export function deactivate() {
 
 }
