@@ -1,14 +1,11 @@
 // Commands for PraatVSCode
-// Orhun Ulusahin, 05/06/2022
+// Orhun Ulusahin
 
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import { updatePathIndicator } from './StatusBar';
 import os = require('os');
-import provideSelection from './SelectionTracker';
 import sendArguments from './SendArguments';
-import { escape, stringify } from 'querystring';
-import { errorMonitor } from 'events';
 
 // Fix for weird unicode characters in terminal output readouts
 const outputReplace:any = /[^a-zA-Z0-9!?.:;-_$\\\t\r\n{} ]/g;
@@ -126,11 +123,11 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 							});
 						} else if (os.type() === 'Linux') {
-							cp.exec(praatPath +'/praat --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '"', (error, stdout, stderr) => {
+							cp.exec(praatPath +'/praat --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
 								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 							});
 						} else if (os.type() === 'Darwin') {
-							cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '"', (error, stdout, stderr) => {
+							cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --send "' + vscode.window.activeTextEditor.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
 								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 							});
 						} else {
@@ -167,7 +164,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 								}
 							});
 						} else if (os.type() === 'Linux') { // Penguin check
-							cp.exec(praatPath +'/praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
+							cp.exec(praatPath +'/praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
 								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 								if (error) {
 									praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
@@ -177,7 +174,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 								}
 							});
 						} else if (os.type() === 'Darwin') { // Steve check
-							cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
+							cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
 								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 								if (error) {
 									praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));

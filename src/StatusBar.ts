@@ -1,5 +1,5 @@
 // Status bar item provider for PraatVSCode
-// Orhun Ulusahin 06/2022
+// Orhun Ulusahin
 
 import * as vscode from 'vscode';
 import provideSelection from './SelectionTracker';

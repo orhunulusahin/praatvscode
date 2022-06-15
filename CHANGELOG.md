@@ -28,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Diagnostics are only provided if the active document's language is set to Praat.
 - Status bar items from PraatVSCode are now only visible if the active document's language is set to Praat.
 - Status bar items update more efficiently. Instead of momentarily hiding the status bar items during value changes, the extension now writes changes instantly.
-- In line with the new script running improvements, the default buttons have been changed to "Run in background" and "Run in Praat"
+- In light of the the new script running improvements, the default buttons have been changed to "Run in background" and "Run in Praat".
+- Fixed a bug causing the "PraatVSCode configuration changed!" alert to pop up on any configuration change (i.e., as opposed to extension-related changes).
 
 ## [0.9.3] - Comprehensive autocompletion, stability and QoL
 

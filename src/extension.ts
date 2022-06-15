@@ -20,10 +20,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Update status bar if user changes configuration
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(changed => {
-		vscode.window.showInformationMessage('PraatVSCode config changed!');
-		updatePathIndicator(context);
-		updateButtons();
-		updateTracker();
+		if (changed.affectsConfiguration("praatvscode")) {
+			vscode.window.showInformationMessage('PraatVSCode config changed!');
+			updatePathIndicator(context);
+			updateButtons();
+			updateTracker();
+		}
 	}));
 	
 	// Track selection or file changes for status bar items
