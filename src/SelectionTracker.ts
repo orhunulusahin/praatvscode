@@ -4,6 +4,7 @@
 
 import { praatClasses } from "./praatGlobals";
 import { TextDocument, Position, workspace  } from "vscode";
+import { isComment } from "./SemanticTokensProvider";
 
 // Define a Praat selection
 export interface PraatSelection {
@@ -54,7 +55,7 @@ export default function provideSelection(doc: TextDocument, position: Position):
             let line = doc.lineAt(i);
 
             // Nearest line that contains selection function
-            if (hasSelection(line.text)) {
+            if (hasSelection(line.text) && !isComment(line.text)) {
 
                 // Now try to see what exactly they selected
                 let selectionString = line.text;

@@ -156,40 +156,40 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 					if (vscode.window.activeTextEditor) {
 						praatOut.show();
 						vscode.window.showTextDocument(vscode.window.activeTextEditor?.document);
-					}
-					if (os.type() === 'Windows_NT') { // Gate check
-						cp.exec('"'+praatPath +'\\Praat.exe" --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
-							vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
-							if (error) {
-								praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
-								throw error;
-							} else {
-								praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + commandClean(stdout) + ' ' + commandClean(stderr));
-							}
-						});
-					} else if (os.type() === 'Linux') { // Penguin check
-						cp.exec(praatPath +'/praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
-							vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
-							if (error) {
-								praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
-								throw error;
-							} else {
-								praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + commandClean(stdout) + ' ' + commandClean(stderr));
-							}
-						});
-					} else if (os.type() === 'Darwin') { // Steve check
-						cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
-							vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
-							if (error) {
-								praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
-								throw error;
-							} else {
-								praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + commandClean(stdout) + ' ' + commandClean(stderr));
-							}
-						});
-					} else {
-						// What distro are they even running?
-						vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
+						if (os.type() === 'Windows_NT') { // Gate check
+							cp.exec('"'+praatPath +'\\Praat.exe" --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
+								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+								if (error) {
+									praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
+									throw error;
+								} else {
+									praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + commandClean(stdout) + ' ' + commandClean(stderr));
+								}
+							});
+						} else if (os.type() === 'Linux') { // Penguin check
+							cp.exec(praatPath +'/praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
+								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+								if (error) {
+									praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
+									throw error;
+								} else {
+									praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + commandClean(stdout) + ' ' + commandClean(stderr));
+								}
+							});
+						} else if (os.type() === 'Darwin') { // Steve check
+							cp.exec(praatPath +'/Praat.app/Contents/MacOS/Praat --run "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"', (error, stdout, stderr) => {
+								vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+								if (error) {
+									praatOut.appendLine('The script did not run.\nPraat sent:\n' + commandClean(error.message));
+									throw error;
+								} else {
+									praatOut.appendLine('The script ran nominally.\nPraat sent:\n' + commandClean(stdout) + ' ' + commandClean(stderr));
+								}
+							});
+						} else {
+							// What distro are they even running?
+							vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
+						}
 					}
 				});
 			} else {
