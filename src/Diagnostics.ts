@@ -1,5 +1,5 @@
 // Diagnostic provider for PraatVSCode
-// Orhun Ulusahin, updated: 07/06/2022
+// Orhun Ulusahin, updated: 31/08/2022
 
 import { Diagnostic, DiagnosticCollection, languages, Range, Position, Location, ExtensionContext, DiagnosticSeverity, DiagnosticChangeEvent, workspace, DiagnosticRelatedInformation, DiagnosticTag, Uri, TextDocument, TextLine, window } from "vscode";
 
@@ -21,7 +21,7 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, selectword+" syntax error", selectword, selectword+" syntax error", selectword+" must take string or variable (object) as input and ':' as operator"));
 					}
 				}
-			})
+			});
 
 
 			// Trying to define a string variable without "$"

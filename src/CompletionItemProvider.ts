@@ -115,7 +115,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 		// const secondFollowingCharacter = new Position(range.start.line, position.character + 2);
 	
 		// Find user-defined variables
-		let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s*)\=/g;
+		let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff$]*)(\s*)\=/g;
 		let match: RegExpExecArray | null = null;
 		while (match = variableMatch.exec(text)) {
 			let word:string;

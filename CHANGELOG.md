@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Diagnostics for illegal string variable declarations (i.e., without "$" at the end of variable name).
+- User-defined string variables now correctly appear in autocompletion.
 
 ### Changed
 
