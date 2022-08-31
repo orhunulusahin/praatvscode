@@ -1,8 +1,9 @@
 // List inputs from a form in a Praat script and send default values into Praat as arguments
 
+import { getLatestInsidersMetadata } from "@vscode/test-electron/out/util";
 import { argv } from "process";
 import { isNumber } from "util";
-import { CommentThreadCollapsibleState, Position, QuickInputButtons, TextDocument } from "vscode";
+import { CommentThreadCollapsibleState, Position, QuickInputButtons, Range, TextDocument } from "vscode";
 import { formWords } from "./SemanticTokensProvider";
 
 // Surround arguments in quotes unless they are numeric
@@ -65,7 +66,16 @@ export default function sendArguments(document: TextDocument): string {
                     // Get the second word after the form input keyword
                     // That also happens to be the end of the line if you trim the spaces
                     let argRange = document.getWordRangeAtPosition(new Position(j, formLine.trimEnd().length));
-                    let argValue = document.getText(argRange);
+
+                    let argValue = "";
+
+                    // Exception for negative numbers
+                    let beforeRange = new Range(new Position(j, formLine.indexOf(document.getText(argRange))-1),new Position(j, formLine.trimEnd().length));
+                    if (document.getText(beforeRange).startsWith("-")) {
+                        argValue = document.getText(beforeRange);
+                    } else {
+                        argValue = document.getText(argRange);
+                    }
 
                     // For reasons unknown to mortals, Praat wants enum (optionmenu) inputs
                     // QUOTED, AS STRINGS, AND AS VALUES RATHER THAN KEYS
@@ -100,6 +110,7 @@ export default function sendArguments(document: TextDocument): string {
     else {
         // Surround every argument in list with quotes
         // And then join them with spaces inbetween
+        // console.log(quotify(args).join(" "));
         return quotify(args).join(" ");
     }
 }
