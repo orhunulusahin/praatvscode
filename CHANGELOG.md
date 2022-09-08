@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Running scripts with arguments.** It is now possible to send scripts to Praat with arguments when dealing with scripts that will only run with certain inputs (e.g., scripts that contain forms).
-    - The implementation of this feature should replace the "open in praat -> run script" workaround.
-    - The user does not need to do anything extra. PraatVSCode will simply detect if the current script contains a form field and will fetch all values that would go into the form.
+  - The implementation of this feature should replace the "open in praat -> run script" workaround.
+  - The user does not need to do anything extra. PraatVSCode will simply detect if the current script contains a form field and will fetch all values that would go into the form.
 - **Praat error handling in VSCode.** The PraatVSCode emulation of the Praat output window now displays errors that would otherwise be displayed in pop-up windows while running through Praat. Thus, users can now obtain information about what went wrong with the script and what line failed to execute without leaving the development environment.
 - **Praat selection provider.** You can now go to extension settings and enable the "selection tracker" to see what object(s) you have selected in Praat on a given line. The new item on the status bar will display a list of selected objects and hovering on the item will display the line numbers of selection(s).
 
