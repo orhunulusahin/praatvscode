@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
 - **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
 
+## [0.10.1] Various bugfixes
+
+- Development continues after a short hiatus.
+
+### Added
+
+- Diagnostics for illegal string variable declarations (i.e., without "$" at the end of variable name).
+- User-defined string variables now correctly appear in autocompletion.
+
+### Changed
+
+- Form fields containing negative numbers are now parsed and sent correctly.
+
 ## [0.10.0] New major features and stability improvements
 
 ### Added
@@ -36,8 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Comprehensive autocompletion.** Almost every function that is listed in the Praat manual is now an autocompletion item. Where possible, the selection of a function will output a snippet that can be tab-browsed. However, the list of functions is automatically generated and likely contains errors. The same database of Praat functions will power upcoming features.
-- **Autosaving files before running scripts.** All 3 Praat interface buttons (i.e., "Run in background", "Run in Praat", "Open in Praat") now save documents before sending them to Praat. Thus, the code the user sees will always be the code the user runs.
-- **Verbosity settings for status bar items.** With two "run buttons" and a selection tracker on the way, verbosity settings for the status bar items have been introduced. Users with smaller screens or crowded status bars can enjoy shorter text.
+- Autosaving files before running scripts. All 3 Praat interface buttons (i.e., "Run in background", "Run in Praat", "Open in Praat") now save documents before sending them to Praat. Thus, the code the user sees will always be the code the user runs.
+- Verbosity settings for status bar items. With two "run buttons" and a selection tracker on the way, verbosity settings for the status bar items have been introduced. Users with smaller screens or crowded status bars can enjoy shorter text.
 
 ### Changed
 
@@ -71,7 +84,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The "extension.ts" *core* file has been cleaned up and the design of the extension was further modularized. Commands are now registered through a separate function exported from a separate document. Status bar items are also managed by a separate function.
 - The Praat output terminal's name in VSCode has been shortened to "Praat InfoWindow".
-
 
 ## [0.9.0] - Abstraction Public Test Release
 
