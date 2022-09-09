@@ -78,7 +78,7 @@ export default function sendArguments(document: TextDocument): string {
                     }
 
                     // For reasons unknown to mortals, Praat wants enum (optionmenu) inputs
-                    // QUOTED, AS STRINGS, AND AS VALUES RATHER THAN KEYS
+                    // AS STRINGS, QUOTED, AND AS VALUES RATHER THAN KEYS
                     // Solution:
                     if ((formLine).trimStart().startsWith("optionmenu")) {
                         let optionList:string[] = [];
