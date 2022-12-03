@@ -5,25 +5,29 @@
 	"icon": "images/praat_128x128.png",
 	"publisher": "OrhunUlusahin",
 	"author": {
-	  "name": "Orhun Ulusahin"
+		"name": "Orhun Ulusahin"
 	},
-	"version": "0.10.0",
+	"version": "0.10.1",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/orhunulusahin/praatvscode.git"
-		},
+	},
 	"bugs": {
 		"url": "https://github.com/orhunulusahin/praatvscode/issues"
-		},
+	},
 	"homepage": "https://github.com/orhunulusahin/praatvscode/blob/main/README.md",
 	"categories": [
-		"Programming Languages", "Snippets", "Formatters"
+		"Programming Languages",
+		"Snippets",
+		"Formatters"
 	],
 	"keywords": [
-		"praat", "phonetics", "phonology"
+		"praat",
+		"phonetics",
+		"phonology"
 	],
 	"activationEvents": [
 		"onLanguage:praat",
@@ -34,45 +38,49 @@
 	"contributes": {
 		"languages": [
 			{
-			  "id": "praat",
-			  "icon": {
-				"light": "./images/praat_32x32.png",
-				"dark": "./images/praat_32x32.png"
-			  },
-			  "extensions": [
-				".praat"
-			  ],
-			  "aliases": [
-				"Praat","pra"
-			  ],
-			  "configuration": "./praat-language-configuration.json"
+				"id": "praat",
+				"icon": {
+					"light": "./images/praat_32x32.png",
+					"dark": "./images/praat_32x32.png"
+				},
+				"extensions": [
+					".praat"
+				],
+				"aliases": [
+					"Praat",
+					"pra"
+				],
+				"configuration": "./praat-language-configuration.json"
 			},
 			{
-			"id": "textgrid",
-			  "icon": {
-				"light": "./images/praat_32x32.png",
-				"dark": "./images/praat_32x32.png"
-			  },
-			  "extensions": [
-				".textgrid"
-			  ],
-			  "aliases": [
-				"TextGRID","textGRID","TextGrid","textGrid"
-			  ],
-			  "configuration": "./textgrid-language-configuration.json"
+				"id": "textgrid",
+				"icon": {
+					"light": "./images/praat_32x32.png",
+					"dark": "./images/praat_32x32.png"
+				},
+				"extensions": [
+					".textgrid"
+				],
+				"aliases": [
+					"TextGRID",
+					"textGRID",
+					"TextGrid",
+					"textGrid"
+				],
+				"configuration": "./textgrid-language-configuration.json"
 			}
 		],
 		"grammars": [
-		  {
-			"language": "praat",
-			"scopeName": "source.praat",
-			"path": "./syntaxes/praat.tmGrammar.json"
-		  },
-		  {
-			"language": "textgrid",
-			"scopeName": "source.textgrid",
-			"path": "./syntaxes/textgrid.tmGrammar.json"
-		  }
+			{
+				"language": "praat",
+				"scopeName": "source.praat",
+				"path": "./syntaxes/praat.tmGrammar.json"
+			},
+			{
+				"language": "textgrid",
+				"scopeName": "source.textgrid",
+				"path": "./syntaxes/textgrid.tmGrammar.json"
+			}
 		],
 		"commands": [
 			{
@@ -119,7 +127,11 @@
 					"type": "string",
 					"default": "praatvscode.runScript",
 					"scope": "resource",
-					"enum": ["praatvscode.runScript", "praatvscode.runInPraat", "praatvscode.openInPraat"],
+					"enum": [
+						"praatvscode.runScript",
+						"praatvscode.runInPraat",
+						"praatvscode.openInPraat"
+					],
 					"enumDescriptions": [
 						"Runs a script in the background without opening Praat and simulates a Praat info window",
 						"Runs a script in Praat after calling the Praat GUI",
@@ -131,7 +143,11 @@
 					"type": "string",
 					"default": "praatvscode.runInPraat",
 					"scope": "resource",
-					"enum": ["praatvscode.runScript", "praatvscode.runInPraat", "praatvscode.openInPraat"],
+					"enum": [
+						"praatvscode.runScript",
+						"praatvscode.runInPraat",
+						"praatvscode.openInPraat"
+					],
 					"enumDescriptions": [
 						"Runs a script in the background without opening Praat and simulates a Praat info window",
 						"Runs a script in Praat after calling the Praat GUI",
@@ -149,7 +165,11 @@
 					"type": "string",
 					"default": "Long text",
 					"scope": "resource",
-					"enum": ["Icons only", "Short text", "Long text"],
+					"enum": [
+						"Icons only",
+						"Short text",
+						"Long text"
+					],
 					"enumDescriptions": [
 						"Only displays icons for the run buttons and line number for selection tracker",
 						"Displays short descriptions for all status bar items",
@@ -161,8 +181,8 @@
 		},
 		"snippets": [
 			{
-			  "language": "praat",
-			  "path": "./snippets.json"
+				"language": "praat",
+				"path": "./snippets.json"
 			}
 		]
 	},
