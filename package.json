@@ -7,7 +7,7 @@
 	"author": {
 		"name": "Orhun Ulusahin"
 	},
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
