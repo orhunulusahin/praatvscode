@@ -104,7 +104,7 @@ export default function sendArguments(document: TextDocument): string {
     }
 
     // Pass empty string if no arguments are declared
-    if (args === []) {
+    if (args.length === 0) {
         return '';
     }
     else {

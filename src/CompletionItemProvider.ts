@@ -67,7 +67,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 		};
 
 		let matches = (name: string) => {
-			return prefix.length === 0 || name.length >= prefix.length && name.substr(0, prefix.length) === prefix;
+			return prefix.length === 0 || name.length >= prefix.length && name.substring(0, prefix.length) === prefix;
 		};
 
 		if (matches('praat') && range.start.character >= 2) {
@@ -98,6 +98,7 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 				result.push(createNewProposal(CompletionItemKind.Keyword, keywords, praatGlobals.keywords[keywords]));
 			}
 		}
+
 		// Include every single built-in Praat function
 		let thisClass: keyof typeof praatManuals.praatMethods;
 		for ( thisClass in praatManuals.praatMethods) {
@@ -111,9 +112,6 @@ export default class PraatCompletionItemProvider implements CompletionItemProvid
 		// Scan the document
 		let text = document.getText();
 
-		// const followingCharacter = new Position(range.start.line, position.character + 1);
-		// const secondFollowingCharacter = new Position(range.start.line, position.character + 2);
-	
 		// Find user-defined variables
 		let variableMatch = /([a-z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff$]*)(\s*)\=/g;
 		let match: RegExpExecArray | null = null;

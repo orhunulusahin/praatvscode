@@ -40,17 +40,17 @@ export default function registerCommands(context: vscode.ExtensionContext) {
                 title: "Define Path"
             });
             // If user entered the executable on Windows, remove it
-            if (promptPath?.includes('Praat.exe')) {
+            if (promptPath?.toLowerCase().endsWith('praat.exe')) {
                 promptPath = promptPath.slice(0, promptPath.length - 9);
             }
             // If the path ends with a slash of either kind, remove it 
-            if (promptPath?.substring(promptPath.length - 1) === "/" || promptPath?.substring(promptPath.length - 1) === "\\") {
+            if (promptPath?.endsWith("/") || promptPath?.endsWith("\\")) {
                 promptPath = promptPath.slice(0, promptPath.length - 1);
             }
         // Return the "raw" path with no trailing slash (might regret later lol)
         vscode.window.showInformationMessage('Praat path set as: '+ promptPath);
         // Little easter egg for the true ones
-        if (promptPath?.includes('desktop') || promptPath?.includes('Desktop')) {
+        if (promptPath?.toLowerCase().endsWith('desktop')) {
             vscode.window.showInformationMessage('Praat on the desktop... you are a true phonetician!');
         }
         // Push to global context

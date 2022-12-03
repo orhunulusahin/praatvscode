@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.1] Various bugfixes
 
-- Development continues after a short hiatus.
+- Development continues after a hiatus.
 
 ### Added
 
@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Form fields containing negative numbers are now parsed and sent correctly.
+- Praat path dialogue box now has existing path (if applicable) as placeholder.
+- Praat path input parsing improved (case sensitivity and desktop easter egg).
+- Various other bug fixes and optimizations.
 
 ## [0.10.0] New major features and stability improvements
 
