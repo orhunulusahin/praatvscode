@@ -16,27 +16,44 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			selectDiagnostic.forEach(selectword => {
 				if (lineOfText.text.includes(selectword)) {
 					if (!lineOfText.text.includes(':') || lineOfText.text.endsWith(":")) {
-						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, selectword+" syntax error", selectword, selectword+" syntax error", selectword+" must take string or variable (object) as input and ':' as operator"));
+						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, selectword + " syntax error", selectword, selectword + " syntax error", selectword + " must take string or variable (object) as input and ':' as operator"));
 					} else if (lineOfText.text.includes('"') && (lineOfText.text.indexOf('"') === lineOfText.text.lastIndexOf('"'))) {
-						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, selectword+" syntax error", selectword, selectword+" syntax error", selectword+" must take string or variable (object) as input and ':' as operator"));
+						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, selectword + " syntax error", selectword, selectword + " syntax error", selectword + " must take string or variable (object) as input and ':' as operator"));
 					}
 				}
 			});
-
 
 			// Trying to define a string variable without "$"
 			const stringDefRegex = /([a-z_.\x7f-\xff][a-zA-Z0-9_'\x7f-\xff]*)(\s*)\=(\s*)\"(.*)\"/g;
 			if (lineOfText.text.match(stringDefRegex) && !lineOfText.text.includes("$")) {
 				let varName = lineOfText.text.split("=")[0].trim();
-				console.log('invalid string definition');
+				// console.log('invalid string definition');
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, varName, varName, "String variable syntax error", "String variable names must end with the character \"$\""));
 			}
+
+			// Detect unclosed tags
+			const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
+			tagPairs.map((pair) => {
+				if (lineOfText.text.trim().startsWith(pair[0])) {
+					console.log(pair)
+					let found = false;
+					for (let i = lineOfText.lineNumber; i < doc.lineCount; i++) {
+						console.log(i)
+						if (doc.lineAt(i).text.trim().startsWith(pair[1])) {
+							found = true;
+							// console.log('unclosed tag');
+							break;
+						}
+						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, pair[0], pair[0], "String variable syntax error", "String variable names must end with the character \"$\""));
+					}
+				}
+			});
 		}
 		praatDiagnostics.set(doc.uri, diagnostics);
 	}
 }
 
-function createDiagnostic(doc: TextDocument, lineOfText: TextLine, lineIndex: number, markedCode:string,  diagnosticText: string, message: string, description: string): Diagnostic {
+function createDiagnostic(doc: TextDocument, lineOfText: TextLine, lineIndex: number, markedCode: string, diagnosticText: string, message: string, description: string): Diagnostic {
 	// find where in the line of that the diagnostic text is mentioned
 	const index = lineOfText.text.indexOf(diagnosticText);
 
@@ -47,7 +64,7 @@ function createDiagnostic(doc: TextDocument, lineOfText: TextLine, lineIndex: nu
 		DiagnosticSeverity.Error);
 	diagnostic.code = markedCode;
 	diagnostic.source = "PraatVSCode";
-	diagnostic.relatedInformation = [ new DiagnosticRelatedInformation(new Location(doc.uri, range), description) ];
+	diagnostic.relatedInformation = [new DiagnosticRelatedInformation(new Location(doc.uri, range), description)];
 	return diagnostic;
 }
 

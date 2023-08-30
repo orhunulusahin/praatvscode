@@ -33,12 +33,7 @@ function hasSelection(string:string):boolean {
             found = true;
         }
     });
-    if (found) {
-        return true;
-    }
-     else {
-        return false;
-    }
+    return found;
 }
 
 export default function provideSelection(doc: TextDocument, position: Position): PraatSelection[] {

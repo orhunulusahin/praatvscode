@@ -7,10 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Planned/Test features
 
-- **Diagnostics.** PraatVSCode will soon display errors, warnings and other relevant information before you run your code. You can demo this feature by typing the "selectObject" function with various inputs. Try an illegal call and see what happens!
-- **Substantially better semantic command of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
+- **Diagnostics.** PraatVSCode will soon display more errors, warnings and other relevant information before you run your code.
+- **Substantially better semantic understanding of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
 - **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
 - **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
+
+## [0.10.3] More Diagnostics, Better Regex & Commands
+
+### Added
+
+- **Unclosed tag warnings.** PraatVSCode will now detect unclosed control tags (e.g., 'for' without 'endfor', etc.) and warn the user in the editor while also pointing to the line where the open tag is.
+
+### Changed
+
+- Some greedy regular expressions, most notably for quotes, are no longer greedy as they terminate captures at a line break.
+
+### Removed
+
+- The `Commands.ts` file has been re-formatted and some redundant comments have been removed. All such comments will eventually be removed from the project.
+
+## [0.10.2] Minor Correction in Written Material
 
 ## [0.10.1] Various bugfixes
 
