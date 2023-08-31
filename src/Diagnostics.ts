@@ -1,6 +1,7 @@
 // Diagnostic provider for PraatVSCode
 // Orhun Ulusahin, updated: 31/08/2022
 
+import { open } from "fs";
 import { Diagnostic, DiagnosticCollection, languages, Range, Position, Location, ExtensionContext, DiagnosticSeverity, DiagnosticChangeEvent, workspace, DiagnosticRelatedInformation, DiagnosticTag, Uri, TextDocument, TextLine, window } from "vscode";
 
 const selectDiagnostic = ["selectObject", "plusObject", "minusObject"];
@@ -32,25 +33,28 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			}
 
 			// Detect unclosed tags
-			// const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
-			// tagPairs.map((pair) => {
-			// 	if (lineOfText.text.trim().startsWith(pair[0])) {
-			// 		let openLine = lineOfText;
-			// 		console.log(pair)
-			// 		let found = false;
-			// 		for (let i = lineOfText.lineNumber; i <= doc.lineCount; i++) {
-			// 			console.log(i)
-			// 			if (doc.lineAt(i).text.trim().startsWith(pair[1])) {
-			// 				found = true;
-			// 				console.log('unclosed tag at line ' + i);
-			// 				break;
-			// 			}
-			// 			if (!found) {
-			// 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, pair[0], pair[0], "Unclosed control tag", "Tag "+pair[0]+" not properly terminated."));
-			// 			}
-			// 		}
-			// 	}
-			// });
+			const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
+			tagPairs.map((pair) => {
+				if (lineOfText.text.trim().startsWith(pair[0])) {
+					let openLine = lineOfText;
+					console.log(pair)
+					console.log(pair[0])
+					console.log(pair[1])
+					let found = false;
+					for (let i = lineOfText.lineNumber; i < doc.lineCount; i++) {
+						if (doc.lineAt(i).text.trim().startsWith(pair[1])) {
+							found = true;
+							console.log(i)
+							console.log('tag closed from line '+openLine.lineNumber + ' to line ' +i)
+							break;
+						}
+					}
+					if (!found) {
+						console.log('unclosed tag at line ' + openLine.lineNumber);
+						diagnostics.push(createDiagnostic(doc, openLine, lineIndex, pair[0], pair[0], "Unclosed control tag", "Tag `"+pair[0]+"` not properly terminated."));
+					}
+				}
+			});
 		}
 		praatDiagnostics.set(doc.uri, diagnostics);
 	}
