@@ -1,7 +1,7 @@
 // Diagnostic provider for PraatVSCode
 // Orhun Ulusahin, updated: 31/08/2022
 
-import { open } from "fs";
+import { close, open } from "fs";
 import { Diagnostic, DiagnosticCollection, languages, Range, Position, Location, ExtensionContext, DiagnosticSeverity, DiagnosticChangeEvent, workspace, DiagnosticRelatedInformation, DiagnosticTag, Uri, TextDocument, TextLine, window } from "vscode";
 
 const selectDiagnostic = ["selectObject", "plusObject", "minusObject"];
@@ -32,34 +32,50 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, varName, varName, "String variable syntax error", "String variable names must end with the character \"$\""));
 			}
 
-			// Detect unclosed tags
-			const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
-			function detectUnclosedTags(startLine: number = lineIndex, endLine: number = doc.lineCount): boolean {
-				let out = false;
-
-				let thisLine = doc.lineAt(startLine);
-				tagPairs.map((pair) => {
-					let openers = [];
-					let closers = [];
-					if (thisLine.text.trim().startsWith(pair[0])) {
-						openers.push(thisLine.lineNumber);
-						
-						console.log('tag ' + pair[0] + ' opened on line ' + thisLine.lineNumber)
-					}
-					if (thisLine.text.trim().startsWith(pair[1])) {
-						closers.push(thisLine.lineNumber);
-						console.log('tag ' + pair[1] + ' closed on line ' + thisLine.lineNumber)
-					}
-					if (openers.length !== closers.length) {
-						diagnostics.push(createDiagnostic(doc, thisLine, thisLine.lineNumber, pair[0], pair[0], "Unmatched control tags.", "Tag `" + pair[0] + "` not properly terminated. It must be terminated with tag `" + pair[1] + "`."));
-					}
-				});
-				return out;
-			}
-			detectUnclosedTags(lineIndex);
-
 		}
+
+		const tagPairs = [
+			['for', 'endfor'],
+			['if', 'endif'],
+			['while', 'endwhile'],
+			['loop', 'until'],
+			['proc', 'endproc']
+		];
+
+		function detectUnclosedTags(startline: number = 0, pair: string[]) {
+			let openers: number[] = [];
+			let closers: number[] = [];
+			for (let lineIndex = startline; lineIndex < doc.lineCount; lineIndex++) {
+				let thisLine = doc.lineAt(lineIndex);
+				if (thisLine.text.trim().startsWith(pair[0])) {
+					openers.push(lineIndex);
+				}
+				if (thisLine.text.trim().startsWith(pair[1])) {
+					closers.push(lineIndex);
+				}
+			}
+			// The last closer "closes" the first opener
+			// Both go, leaving an array of unopened tags
+			closers = closers.reverse();
+			if (openers.length !== closers.length) {
+				let k =0;
+				while(k <= Math.min(closers.length, openers.length) && closers.length + openers.length > 1) {
+					openers.shift();
+					closers.pop();
+					k++;
+				}
+				openers.forEach(opener => {
+					diagnostics.push(createDiagnostic(doc, doc.lineAt(opener), opener, pair[0], pair[0], "Unmatched control tags.", "Tag `" + pair[0] + "` not properly terminated. Must be terminated with tag `" + pair[1] + "`."));
+				});
+				closers.forEach(closer => {
+					diagnostics.push(createDiagnostic(doc, doc.lineAt(closer), closer, pair[1], pair[1], "Unmatched control tags.", "Tag `" + pair[1] + "` not properly initiated. Must be initiated with tag `" + pair[0] + "`."));
+				});
+			}
+		}
+		tagPairs.map((tagPair => detectUnclosedTags(0, tagPair)));
+
 		praatDiagnostics.set(doc.uri, diagnostics);
+
 	}
 }
 
