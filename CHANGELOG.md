@@ -7,12 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Planned/Test features
 
-- **Diagnostics.** PraatVSCode will soon display more errors, warnings and other relevant information before you run your code.
+- **More diagnostics.** PraatVSCode will soon display more errors, warnings and other relevant information before you run your code.
 - **Substantially better semantic understanding of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
 - **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
 - **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
 
-## [0.10.4] Diagnostic Bugfix
+## [0.10.5] Diagnostic Bugfix
+
+### Changed
+
+- Unclosed tags (or uninitiated tags) for control keywords are now correctly detected and reported. Some keywords should not be able to "jump" across others. The detection of this will be added later.
+- The status bar item for Praat selection now correctly displays line number (if verbosity is max).
+
+## [0.10.4] Diagnostic Hotfix
+
+### Changed
 
 - The unclosed tag diagnostics have been temporarily disabled while a duplication bug is addressed.
 

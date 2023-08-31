@@ -83,7 +83,6 @@ export function updateButtons() {
 		runButtonTwo.tooltip = commandArraysLong[buttonTwoIndex][3];
 	}
 
-	// Hide buttons if language isn't Praat or if path isn't set yet
 	if (pathValid === undefined || pathValid === false) {
 		runButtonOne.hide();
 		runButtonTwo.hide();
@@ -112,7 +111,6 @@ export function updatePathIndicator(context: vscode.ExtensionContext) {
 		pathIndicator.backgroundColor = new vscode.ThemeColor('statusBarItem.remoteBackground');
 		pathValid = true;
 	}
-	// Hide path indicator if file isn't Praat script
 	if (vscode.window.activeTextEditor?.document.languageId === "praat") {
 		pathIndicator.show();
 	}
@@ -134,7 +132,7 @@ export function updateTracker() {
     else if (verbosity === "Short text") {
         preText = "$(symbol-misc) Selected: ";
     } else {
-        preText = "$(symbol-misc) Selection at ln ";
+        preText = "$(symbol-misc) Selection at ln: ";
     }
 
 	if (trackerEnabled) {
@@ -148,11 +146,11 @@ export function updateTracker() {
 			);
 			if (selection.length === 0) {
 				selectionTracker.tooltip = "No selection";
-				selectionTracker.text = preText + "null";
+				selectionTracker.text = "No selection";
 			}
 			else if (selection.length === 1) {
 				selectionTracker.tooltip = "Last selection at line " + (selection[0].lineNumber+1);
-				selectionTracker.text = preText;
+				selectionTracker.text = preText + (selection[0].lineNumber+1);
 				if (selection[0].selectionType) {
 					selectionTracker.text = selectionTracker.text.concat(" "+selection[0].selectionType);
 				}
@@ -177,8 +175,6 @@ export function updateTracker() {
 				});
 				selectionTracker.tooltip = selectionTooltipText;
 				selectionTracker.text = selectionText;
-				// console.log(selectionTooltipText);
-				// console.log(selectionText);
 			}
 		}
 		selectionTracker.show();
@@ -187,7 +183,6 @@ export function updateTracker() {
 		selectionTracker.hide();
 	}
 
-	// Hide selector if file isn't Praat script
 	if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 		selectionTracker.hide();
 	}
