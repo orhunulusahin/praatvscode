@@ -36,42 +36,22 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
 			function detectUnclosedTags(startLine: number = lineIndex, endLine: number = doc.lineCount): boolean {
 				let out = false;
+
 				let thisLine = doc.lineAt(startLine);
 				tagPairs.map((pair) => {
+					let openers = [];
+					let closers = [];
 					if (thisLine.text.trim().startsWith(pair[0])) {
-						let closed = false;
-						let embedded = false;
-						let embedLineNumber:number = startLine + 1;
-						let closingLineNumber: number = endLine-1;
-						let embedResolved = true;
-						for (let i = thisLine.lineNumber+1; i < endLine; i++) {
-							if (doc.lineAt(i).text.trim().startsWith(pair[1])) {
-								closed = true;
-								closingLineNumber = i;
-								console.log('tag opened on line '+thisLine.lineNumber+' and closed on '+i)
-							}
-							if (doc.lineAt(i).text.trim().startsWith(pair[0]) && !closed) {
-								embedded = true;
-								embedLineNumber = i;
-								embedResolved = false;
-							}
-						}
-						// console.log('embed resolved: ' + embedResolved)
-
-						// The first detected tag is fine but there might be unclosed embedded tags
-						if (embedded) {
-							// console.log(embedLineNumber,closingLineNumber)
-							embedResolved = !detectUnclosedTags(embedLineNumber, closingLineNumber-1);
-						}
-
-						if (!embedResolved || !closed) {
-							console.log('tag opened on line '+embedLineNumber +' not closed!')
-						}
-
-						if (!closed && embedResolved) {
-							diagnostics.push(createDiagnostic(doc, thisLine, thisLine.lineNumber, pair[0], pair[0], "Unclosed control tag.", "Tag `" + pair[0] + "` not properly terminated. It must be terminated with tag `"+pair[1]+"`."));
-							out = true;
-						}
+						openers.push(thisLine.lineNumber);
+						
+						console.log('tag ' + pair[0] + ' opened on line ' + thisLine.lineNumber)
+					}
+					if (thisLine.text.trim().startsWith(pair[1])) {
+						closers.push(thisLine.lineNumber);
+						console.log('tag ' + pair[1] + ' closed on line ' + thisLine.lineNumber)
+					}
+					if (openers.length !== closers.length) {
+						diagnostics.push(createDiagnostic(doc, thisLine, thisLine.lineNumber, pair[0], pair[0], "Unmatched control tags.", "Tag `" + pair[0] + "` not properly terminated. It must be terminated with tag `" + pair[1] + "`."));
 					}
 				});
 				return out;
