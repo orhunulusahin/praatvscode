@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
 - **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
 
+## [0.10.4] Diagnostic Bugfix
+
+- The unclosed tag diagnostics have been temporarily disabled while a duplication bug is addressed.
+
 ## [0.10.3] More Diagnostics, Better Regex & Commands
 
 ### Added

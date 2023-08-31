@@ -32,22 +32,25 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			}
 
 			// Detect unclosed tags
-			const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
-			tagPairs.map((pair) => {
-				if (lineOfText.text.trim().startsWith(pair[0])) {
-					console.log(pair)
-					let found = false;
-					for (let i = lineOfText.lineNumber; i < doc.lineCount; i++) {
-						console.log(i)
-						if (doc.lineAt(i).text.trim().startsWith(pair[1])) {
-							found = true;
-							// console.log('unclosed tag');
-							break;
-						}
-						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, pair[0], pair[0], "String variable syntax error", "String variable names must end with the character \"$\""));
-					}
-				}
-			});
+			// const tagPairs = [['for', 'endfor'], ['if', 'endif'], ['while', 'endwhile'], ['loop', 'until'], ['proc', 'endproc']];
+			// tagPairs.map((pair) => {
+			// 	if (lineOfText.text.trim().startsWith(pair[0])) {
+			// 		let openLine = lineOfText;
+			// 		console.log(pair)
+			// 		let found = false;
+			// 		for (let i = lineOfText.lineNumber; i <= doc.lineCount; i++) {
+			// 			console.log(i)
+			// 			if (doc.lineAt(i).text.trim().startsWith(pair[1])) {
+			// 				found = true;
+			// 				console.log('unclosed tag at line ' + i);
+			// 				break;
+			// 			}
+			// 			if (!found) {
+			// 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, pair[0], pair[0], "Unclosed control tag", "Tag "+pair[0]+" not properly terminated."));
+			// 			}
+			// 		}
+			// 	}
+			// });
 		}
 		praatDiagnostics.set(doc.uri, diagnostics);
 	}
