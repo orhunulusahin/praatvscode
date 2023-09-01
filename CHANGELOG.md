@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.5] Diagnostic Bugfix
 
+### Added
+
+- More tokens for syntax and semantic highlighters.
+
+### Changed
+
+- Small optimizations in the semantic token provider.
+
+## [0.10.5] Diagnostic Bugfix
+
 ### Changed
 
 - Unclosed tags (or uninitiated tags) for control keywords are now correctly detected and reported. Some keywords should not be able to "jump" across others. The detection of this will be added later.

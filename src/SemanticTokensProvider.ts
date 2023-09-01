@@ -1,24 +1,25 @@
 // Semantic token provider for PraatVSCode
 // Orhun Ulusahin, updated 06/06/2022
 
-import { window, CancellationToken, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, Position, DocumentHighlight } from 'vscode';
+import { window, CancellationToken, TextDocument, SemanticTokens, SemanticTokensBuilder, SemanticTokensLegend, DocumentSemanticTokensProvider, Event, Position, DocumentHighlight, Hover, Range, CancellationTokenSource } from 'vscode';
+import PraatHoverProvider, { textToMarkedString } from './HoverProvider';
 
 // Gets array of indices for multiple occurences of substring
-export function getIndices(needle:string, haystack:string, matchCase:boolean): number[] {
-    let searchStrLen = needle.length;
-    if (searchStrLen === 0) {
-        return [];
-    }
-    let searchOnset = 0, index, indices = [];
-    if (!matchCase) {
+export function getIndices(needle: string, haystack: string, matchCase: boolean): number[] {
+	let searchStrLen = needle.length;
+	if (searchStrLen === 0) {
+		return [];
+	}
+	let searchOnset = 0, index, indices = [];
+	if (!matchCase) {
 		needle = needle.toLowerCase();
-        haystack = haystack.toLowerCase();
-    }
-    while ((index = haystack.indexOf(needle, searchOnset)) > -1) {
-        indices.push(index);
-        searchOnset = index + searchStrLen;
-    }
-    return indices;
+		haystack = haystack.toLowerCase();
+	}
+	while ((index = haystack.indexOf(needle, searchOnset)) > -1) {
+		indices.push(index);
+		searchOnset = index + searchStrLen;
+	}
+	return indices;
 }
 
 interface IParsedToken {
@@ -41,11 +42,11 @@ export class PraatLegend implements SemanticTokensLegend {
 }
 
 // Function for determining if a line is a comment
-export function isComment(line:string): boolean | null {
+export function isComment(line: string): boolean | null {
 	line = line.trimStart();
 	if (line.length === 0) {
-        return null;
-    }
+		return null;
+	}
 	else if (line.startsWith("#") || line.startsWith(";")) {
 		return true;
 	} else {
@@ -62,24 +63,24 @@ export function isComment(line:string): boolean | null {
 // }
 
 // Words used for catching variable declarations in forms
-const enumFormWords = ['optionmenu','boolean'];
-const numFormWords = ['real','number','integer','natural'];
-const strFormWords = ['word','sentence','text','infile','outfile','folder'];
+const enumFormWords = ['optionmenu', 'boolean'];
+const numFormWords = ['real', 'number', 'integer', 'natural'];
+const strFormWords = ['word', 'sentence', 'text', 'infile', 'outfile', 'folder'];
 export const formWords = enumFormWords.concat(numFormWords).concat(strFormWords);
 
 // Function for ruling out keywords that should deny highlighting in line
 export const noHighlightWords = formWords;
-export function shouldHighlight(line:string):boolean | null {
-	let shouldNotHighlight:boolean = formWords.some((item) => line.includes(item));
+export function shouldHighlight(line: string): boolean | null {
+	let shouldNotHighlight: boolean = formWords.some((item) => line.includes(item));
 	if (line.length === 0) {
-        return null;
-    }
+		return null;
+	}
 	else if ((line.includes('Formula') && line.endsWith("\"")) || line.includes('option')) {
 		return false;
 	}
 	else if (shouldNotHighlight) {
 		return false;
-	} 
+	}
 	else {
 		return true;
 	}
@@ -104,10 +105,10 @@ tokenModifiersLegend.forEach((tokenModifier, index) => tokenModifiers.set(tokenM
 
 export default class PraatSemanticHighlighter implements DocumentSemanticTokensProvider {
 
-    onDidChangeSemanticTokens?: Event<void> | undefined;
+	onDidChangeSemanticTokens?: Event<void> | undefined;
 
-    public async provideDocumentSemanticTokens(document: TextDocument, _token: CancellationToken): Promise<SemanticTokens | null | undefined> {
-		
+	public async provideDocumentSemanticTokens(document: TextDocument, _token: CancellationToken): Promise<SemanticTokens | null | undefined> {
+
 		// Gets all declarations
 		const allTokens = this._parseText(document);
 		const builder = new SemanticTokensBuilder();
@@ -156,10 +157,10 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 			let match: RegExpExecArray | null = null;
 			if (line.indexOf("=") === line.lastIndexOf("=") && !line.includes('if') && !isComment(line)) {
 				// Look for standard declaration
-                while (match = variableMatch.exec(line)) {
-                    if (match[0].endsWith("==")) {
-                        continue;
-                    }
+				while (match = variableMatch.exec(line)) {
+					if (match[0].endsWith("==")) {
+						continue;
+					}
 					let word = match[0].split("=")[0].trimRight();
 					r.push({
 						line: i,
@@ -175,9 +176,9 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						// If word is not embedded in another word...
 						// There MUST be plenty of room for optimization here!
 						if (callLine.includes(word) && !isComment(callLine) && shouldHighlight(callLine)) {
-							let indices = getIndices(word,callLine,false);
+							let indices = getIndices(word, callLine, false);
 							indices.forEach(index => {
-								let wordAtFollowing = document.getText(document.getWordRangeAtPosition(new Position(j, index+1)));
+								let wordAtFollowing = document.getText(document.getWordRangeAtPosition(new Position(j, index + 1)));
 								let wordAtPrevious = document.getText(document.getWordRangeAtPosition(new Position(j, index)));
 								if (wordAtFollowing === word && word === wordAtPrevious) {
 									r.push({
@@ -201,11 +202,11 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 			if (line.includes("for")) {
 				while (loopMatchArray = loopMatch.exec(line)) {
 					// Use position to fetch the whole word
-					let catchPosition:Position;
+					let catchPosition: Position;
 					if (line.includes('from')) {
-						catchPosition = new Position(i, line.indexOf("from")-2);
+						catchPosition = new Position(i, line.indexOf("from") - 2);
 					} else {
-						catchPosition = new Position(i, line.indexOf("to")-2);
+						catchPosition = new Position(i, line.indexOf("to") - 2);
 					}
 					let iterator = document.getText(document.getWordRangeAtPosition(catchPosition));
 					iterator = iterator.trim();
@@ -216,14 +217,14 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 						tokenType: 'variable',
 						tokenModifiers: ['declaration']
 					});
-					for (let j = i+1; j < lines.length; j++) {
+					for (let j = i + 1; j < lines.length; j++) {
 						let callLine = lines[j];
 						// If word is not embedded in another word...
 						// There MUST be plenty of room for optimization here!
 						if (!isComment(callLine) && shouldHighlight(callLine)) {
-							let indices = getIndices(iterator,callLine,false);
+							let indices = getIndices(iterator, callLine, false);
 							indices.forEach(index => {
-								let wordAtFollowing = document.getText(document.getWordRangeAtPosition(new Position(j, index+1)));
+								let wordAtFollowing = document.getText(document.getWordRangeAtPosition(new Position(j, index + 1)));
 								let wordAtPrevious = document.getText(document.getWordRangeAtPosition(new Position(j, index)));
 								if (wordAtFollowing === iterator && iterator === wordAtPrevious) {
 									r.push({
@@ -242,14 +243,14 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 
 			// And for procedure declarations
 			if (line.includes('procedure') && !isComment(line)) {
-				let procName:string = '';
+				let procName: string = '';
 				// See if it takes arguments
 				let spacecount = line.length - line.trimStart().length;
 				if (line.includes(':')) {
-					procName = line.substring(spacecount+9,line.length).split(':')[1].trim();
+					procName = line.substring(spacecount + 9, line.length).split(':')[1].trim();
 				}
 				else {
-					procName = line.substring(spacecount+9,line.length).split(' ')[1].trim();
+					procName = line.substring(spacecount + 9, line.length).split(' ')[1].trim();
 				}
 				r.push({
 					line: i,
@@ -262,9 +263,9 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 				// Now find the calls
 				for (let j = 0; j < lines.length; j++) {
 					let callLine = lines[j];
-					if (callLine.includes(" " + procName) && !isComment(callLine) && shouldHighlight(callLine)) {
+					if (callLine.includes(" " + procName) || callLine.includes("@" + procName) && !isComment(callLine) && shouldHighlight(callLine)) {
 						// Add space to avoid embedded words
-						let indices = getIndices(procName,callLine,false);
+						let indices = getIndices(procName, callLine, false);
 						indices.forEach(index => {
 							r.push({
 								line: j,
@@ -273,6 +274,15 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 								tokenType: 'function',
 								tokenModifiers: []
 							});
+							if (callLine.includes("@" + procName)) {
+								r.push({
+									line: j,
+									startCharacter: index - 1,
+									length: 1,
+									tokenType: 'keyword',
+									tokenModifiers: []
+								});
+							}
 						});
 					}
 				}
@@ -281,7 +291,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 			// Also get variables declared in forms
 			// If line contains a form element corresponding to any of the above...
 			if (hasFormInput && !isComment(line)) {
-				let inputName:string = '';
+				let inputName: string = '';
 				let keywordIndex = formWords.findIndex((item) => line.includes(item));
 				// Find name of variable
 				// Special case for optionmenu which takes ":" as operator
@@ -303,7 +313,7 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 					let callLine = lines[j];
 					if ((callLine.includes(" " + inputName) || callLine.includes(inputName + " ")) && !isComment(callLine) && shouldHighlight(callLine)) {
 						// Add space to avoid embedded words
-						let indices = getIndices(inputName,callLine,false);
+						let indices = getIndices(inputName, callLine, false);
 						indices.forEach(index => {
 							r.push({
 								line: j,
@@ -317,6 +327,18 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 				}
 			}
 		}
+
+		// r.forEach(token => {
+		// 	if (token.tokenType === "variable") {
+		// 		let tokenPosition = new Position(token.line, token.startCharacter);
+		// 		let tokenRange = document.getWordRangeAtPosition(tokenPosition);
+		// 		let contents = textToMarkedString(document.getText(tokenRange));
+		// 		console.log(contents + ' at line ' + tokenPosition.line + ' and char ' + tokenPosition.character);
+		// 		new PraatHoverProvider().provideHover(document, tokenPosition, new CancellationTokenSource().token, new Hover(contents, tokenRange) );
+		// 		// new PraatHoverProvider().addHover(new Hover(contents,tokenRange));
+		// 	}
+		// });
+
 		return r;
 	}
 }

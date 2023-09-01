@@ -305,7 +305,7 @@
       "name": "support.class.builtin.praat"
     },
     "control": {
-      "match": "\\b(for|while|end(for|while|if|form|proc)|from|to|repeat|until|if|then|fi|else|elsif|elif|nowarn|noprogress|nocheck|assert|form|call|procedure)\\b",
+      "match": "\\b(for|while|end(for|while|if|form|proc)|from|to|repeat|until|if|then|fi|else|elsif|elif|nowarn|noprogress|nocheck|assert|form|call|procedure|Edit)\\b",
       "name": "keyword.control.praat"
     },
     "sound-spectrum-function": {
@@ -393,7 +393,7 @@
       }
     },
     "other-save-function": {
-      "match": "(\\s)*?\\b(Save as ((short |chronological |matrix )?text|binary|headerless spreadsheet) file)\\b",
+      "match": "(\\s)*?\\b((Save as|Write to) ((short |chronological |matrix )?text|binary|headerless spreadsheet) file)\\b",
       "name": "support.function.string.praat"
     },
     "import": {
