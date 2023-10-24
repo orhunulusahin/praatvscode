@@ -2,20 +2,40 @@
 
 All notable changes to the PraatVSCode extension will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## Planned/Test features
 
 - **More diagnostics.** PraatVSCode will soon display more errors, warnings and other relevant information before you run your code.
 - **Substantially better semantic understanding of documents.** A new list of Praat classes and methods is being generated. This list contains information about a particular method's input count, the input types, the operator, the separator between inputs and more. As a result, autocompletion and diagnostics will operate much more smoothly.
 - **Better selection provider.** In the future, the extension will also take into account Praat object methods that select their output automatically when listing selections.
-- **Comprehensive syntactic highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
+- **Comprehensive syntax highlighting.** A much larger number of built-in Praat functions will be registered in the Praat language grammar.
+
+## Known Issues
+
+- Praat path-finding and script execution can be erratic on Unix-like platforms (i.e., Mac and Linux).
+- Control keyword pairs don't check across categories. Thus, if an embedded control keyword is terminated outside the space defined by its containing keyword pair, a diagnostic is not generated. For instance, `for` followed by `if` followed by `endfor` followed by `endif` should generate an error, but is not reported.
+- Form arguments are only correctly selected and sent to Praat when using the "old" (i.e., "..." operator) syntax. Support for the new syntax will be added shortly.
+
+## [0.11] Backend Optimization and Better Support for the New (:) Syntax
+
+### Added
+
+- **Active Praat output stream.** The extension now directly streams Praat output to its internal output window as opposed to waiting for the script to finish running and dumping the complete output. It also reports script runtime and more clearly highlights the boundaries of script outputs.
+- Opening or running scripts in the Praat GUI now hides the picture window by default.
+- OS-specific placeholders for the praat path declaration input.
+
+### Changed
+
+- The script execution mechanism is being overhauled. This means:
+  - Better performance across different operating systems.
+  - Cleaner indexing and expandability for code contribution and future optimization.
+  - Reduced memory and processing load. This is unlikely to effect script runtimes on more modern machines, but will lead to noticeable changes on older hardware.
+  - Even faster background processing compared to the Praat GUI.
 
 ## [0.10.5] Diagnostic Bugfix
 
 ### Added
 
+- PraatVSCode is now available on open-vsix, the open-source VSCode extension repository. Thus, users of VSCodium can also download PraatVSCode from within the application.
 - More tokens for syntax and semantic highlighters.
 
 ### Changed
