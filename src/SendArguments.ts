@@ -110,7 +110,6 @@ export default function sendArguments(document: TextDocument): string {
     else {
         // Surround every argument in list with quotes
         // And then join them with spaces inbetween
-        // console.log(quotify(args).join(" "));
         return quotify(args).join(" ");
     }
 }

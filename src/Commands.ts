@@ -111,9 +111,6 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 		}
 	});
 
-	console.log(exePath)
-	console.log(praatPath)
-
 	// Command for opening a script in Praat
 	regCmd(context, 'praatvscode.openInPraat', () => {
 		if (praatPath === undefined) {
@@ -178,25 +175,14 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 					if (vscode.window.activeTextEditor) {
 
 						praatOut.show();
+
 						vscode.window.showTextDocument(vscode.window.activeTextEditor?.document);
-
-						var exePath = "";
-
-						if (isWin) {
-							exePath = '"' + praatPath + '\\Praat.exe"';
-						} else if (isLnx) {
-							exePath = praatPath + '/praat';
-						} else if (isMac) {
-							exePath = praatPath + '/Praat.app/Contents/MacOS/Praat';
-						} else {
-							return vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
-						}
 
 						vscode.window.showInformationMessage('Running script: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 
-						let beginTime = Date.now()
-						let endTime = Date.now()
-						const praatShell = cp.exec(exePath + ' --run -8 "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)));
+						let beginTime = Date.now();
+						let endTime = Date.now();
+						const praatShell = cp.exec(quote(exePath) + ' --run -8 "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)));
 
 						if (praatShell.pid > 0) {
 

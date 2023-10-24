@@ -28,7 +28,6 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			const stringDefRegex = /([a-z_.\x7f-\xff][a-zA-Z0-9_'\x7f-\xff]*)(\s*)\=(\s*)\"(.*)\"/g;
 			if (lineOfText.text.match(stringDefRegex) && !lineOfText.text.includes("$")) {
 				let varName = lineOfText.text.split("=")[0].trim();
-				// console.log('invalid string definition');
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, varName, varName, "String variable syntax error", "String variable names must end with the character \"$\""));
 			}
 

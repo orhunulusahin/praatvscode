@@ -333,7 +333,6 @@ export default class PraatSemanticHighlighter implements DocumentSemanticTokensP
 		// 		let tokenPosition = new Position(token.line, token.startCharacter);
 		// 		let tokenRange = document.getWordRangeAtPosition(tokenPosition);
 		// 		let contents = textToMarkedString(document.getText(tokenRange));
-		// 		console.log(contents + ' at line ' + tokenPosition.line + ' and char ' + tokenPosition.character);
 		// 		new PraatHoverProvider().provideHover(document, tokenPosition, new CancellationTokenSource().token, new Hover(contents, tokenRange) );
 		// 		// new PraatHoverProvider().addHover(new Hover(contents,tokenRange));
 		// 	}
