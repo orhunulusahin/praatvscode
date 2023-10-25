@@ -63,9 +63,9 @@ export function isComment(line: string): boolean | null {
 // }
 
 // Words used for catching variable declarations in forms
-const enumFormWords = ['optionmenu', 'boolean'];
-const numFormWords = ['real', 'number', 'integer', 'natural'];
-const strFormWords = ['word', 'sentence', 'text', 'infile', 'outfile', 'folder'];
+const enumFormWords = ['optionmenu', 'boolean', 'choice'];
+const numFormWords = ['real', 'number', 'integer', 'positive', 'natural'];
+const strFormWords = ['word', 'sentence', 'text', 'infile', 'outfile', 'folder']; // 'comment', 'option', and 'form' should be omitted
 export const formWords = enumFormWords.concat(numFormWords).concat(strFormWords);
 
 // Function for ruling out keywords that should deny highlighting in line

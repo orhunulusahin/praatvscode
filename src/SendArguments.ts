@@ -1,9 +1,5 @@
 // List inputs from a form in a Praat script and send default values into Praat as arguments
-
-import { getLatestInsidersMetadata } from "@vscode/test-electron/out/util";
-import { argv } from "process";
-import { isNumber } from "util";
-import { CommentThreadCollapsibleState, Position, QuickInputButtons, Range, TextDocument } from "vscode";
+import { Position, Range, TextDocument } from "vscode";
 import { formWords } from "./SemanticTokensProvider";
 
 // Surround arguments in quotes unless they are numeric
@@ -19,6 +15,14 @@ function quotify(stringList:string[]): string[] {
         }
     });
     return newList;
+}
+
+// Unquote a string only if it's actually quoted
+function unquote(input: string) {
+    if (input.startsWith('"') && input.endsWith('"')) {
+        return input.substring(1,input.length-1);
+    }
+    return input;
 }
 
 // Find the end of a form
@@ -48,55 +52,105 @@ export default function sendArguments(document: TextDocument): string {
     var args:string[] = [];
 
     for (let i=0; i<document.lineCount; i++) {
+
         let line = document.lineAt(i);
 
-        // Look for a form
         if (line.text.trimStart().startsWith("form") && !line.text.trimStart().startsWith("endform")) {
 
-            // Now loop within form for all inputs
-            let formLine:string = '';
-            // let inputCount = 0;
+            // Form title as string must be passed
+            // if (line.text.trimStart().startsWith('form:')) {
+            //     let formTitle = unquote(line.text.split('form:')[1].trim());
+            //     args.push(formTitle);
+            // }
+
+            console.log('form begin')
+
             for (let j = i+1; j < endOfForm(document,i); j++) {
 
-                formLine = document.lineAt(j).text;
+                let formLine = document.lineAt(j);
+                let formLineText = formLine.text;
 
-                let hasFormInput = formWords.some((item) => formLine.trimStart().startsWith(item));
-                if (hasFormInput) {
+                let hasFormInputNew = formWords.some((item) => formLineText.trimStart().startsWith(item+":"));
+                let hasFormInputOld = formWords.some((item) => formLineText.trimStart().startsWith(item));
 
-                    // Get the second word after the form input keyword
-                    // That also happens to be the end of the line if you trim the spaces
-                    let argRange = document.getWordRangeAtPosition(new Position(j, formLine.trimEnd().length));
+                if (hasFormInputNew || hasFormInputOld) {
 
-                    let argValue = "";
+                    console.log('found on line '+ document.lineAt(j).lineNumber)
 
-                    // Exception for negative numbers
-                    let beforeRange = new Range(new Position(j, formLine.indexOf(document.getText(argRange))-1),new Position(j, formLine.trimEnd().length));
-                    if (document.getText(beforeRange).startsWith("-")) {
-                        argValue = document.getText(beforeRange);
-                    } else {
-                        argValue = document.getText(argRange);
-                    }
+                    let argRange:Range|undefined;
+                    let argValue = '';
 
+                    
                     // For reasons unknown to mortals, Praat wants enum (optionmenu) inputs
                     // AS STRINGS, QUOTED, AND AS VALUES RATHER THAN KEYS
                     // Solution:
-                    if ((formLine).trimStart().startsWith("optionmenu")) {
+                    if ((formLineText).trimStart().startsWith("optionmenu") || (formLineText).trimStart().startsWith("choice")) {
+                        console.log('choice start: ' + formLineText.split(':')[1])
                         let optionList:string[] = [];
                         for (let k = j+1; k < endOfOptionmenu(document,j); k++) {
                             let optLine = document.lineAt(k).text;
                             // Get rid of the word "option" and that's our value!
-                            let optValue = optLine.trim().substring(6).trim();
+                            let trimValue = (hasFormInputNew) ? 7 : 6;
+                            let optValue = optLine.trim().substring(trimValue).trim();
+                            if (hasFormInputNew) { optValue = unquote(optValue); }
                             optionList.push(optValue);
+                            console.log(optionList);
                         }
                         // Select whatever option would be selected by Praat optionmenu number
-                        // Adjust index by -1: Praat counts from 1!
-                        argValue = optionList[Number(argValue)-1];
+                        let argIndex = formLineText.split(',')[1].trim();
+                        // Adjust index by -1: Praat counts from 1!'
+                        argValue = optionList[Number(argIndex)-1];
+                        args.push(argValue);
+                        console.log('choice val: ' + argValue);
+
+                    } else if(hasFormInputNew) {
+
+                        console.log('new input begin')
+
+                        let firstColonIndex = formLineText.indexOf(':');
+                        let firstSplit = formLineText.substring(firstColonIndex+1).trim();
+                        let thisLine = formLineText;
+                        let thisArgs:string[] = [];
+
+                        // There may be multiple arguments
+                        if (firstSplit.includes(',')) {
+                            console.log(firstSplit.split(','))
+                            // The first is the variable name, and shouldn't be sent as argument!
+                            let split = firstSplit.split(',');
+
+                            split.forEach(arg => {
+                                if (split.indexOf(arg) > 0) {
+                                    unquote(args.push(arg).toString().trim());
+                                }
+                            });
+                        } else {
+                            args.push(unquote(firstSplit));
+                        }
+
+                        console.log('new input end')
+
+                        
+                    } else if (hasFormInputOld) {
+
+                        // Get the second word after the form input keyword
+                        // That also happens to be the end of the line if you trim the spaces
+                        argRange = document.getWordRangeAtPosition(new Position(j, formLineText.trimEnd().length));
+
+                        // Exception for negative numbers
+                        let beforeRange = new Range(new Position(j, formLineText.indexOf(document.getText(argRange))-1),new Position(j, formLineText.trimEnd().length));
+                        if (document.getText(beforeRange).startsWith("-")) {
+                            argValue = document.getText(beforeRange);
+                        } else {
+                            argValue = document.getText(argRange);
+                        }
+                        args.push(argValue);
 
                     }
-                    args.push(argValue);
-                    // inputCount++;
+
+                    console.log(args)
                 }
-                if (formLine.includes("endform")) {
+                if (formLineText.includes("endform")) {
+                    console.log('form end')
                     break;
                 }
             }
@@ -106,8 +160,7 @@ export default function sendArguments(document: TextDocument): string {
     // Pass empty string if no arguments are declared
     if (args.length === 0) {
         return '';
-    }
-    else {
+    } else {
         // Surround every argument in list with quotes
         // And then join them with spaces inbetween
         return quotify(args).join(" ");

@@ -418,7 +418,7 @@
           "name": "support.function.praat"
         },
         {
-          "begin": "(\\s)*?\\b(printline|exit|pause|echo|print)\\s",
+          "begin": "(\\s)*?\\b(printline|exit|pause|echo|print|exitScript[:])\\s",
           "end": "(.)*?$",
           "beginCaptures": {
             "0": {
