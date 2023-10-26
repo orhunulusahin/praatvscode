@@ -195,11 +195,33 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 							praatShell.stdout?.on('error', function (error) {
 								praatOut.appendLine(error.message);
 								praatShell.kill();
+
 							});
 
 							praatShell.stderr?.on('data', function (data) {
 								praatOut.appendLine(data.toString());
 								endTime = Date.now();
+
+								// error parser
+								let errLine = data.split('Script line ')[1].split(' not')[0];
+								praatOut.appendLine('Crashed on line ' + errLine + '!');
+
+								let activeEditor = vscode.window.activeTextEditor;
+								let document = activeEditor?.document;
+								let curPos = activeEditor?.selection.active;
+								let direction = "up";
+								let distance = 0;
+								if (curPos?.line) {
+									direction = (curPos?.line+1 > errLine) ? "up" : "down";
+									distance = (curPos?.line+1 > errLine) ? curPos?.line+1-Number(errLine) : curPos?.line+1+Number(errLine);
+								}
+
+								vscode.commands.executeCommand('cursorMove', {
+									to: direction,
+									by: 'line',
+									value: distance
+								});
+
 								praatShell.kill();
 							});
 

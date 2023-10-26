@@ -4,7 +4,7 @@
 // This file is semi-automatically generated from Praat manuals //
 // Contact orhunulusahin before editing (to avoid possibly wasting your own time) //
 
-import { IEntries } from './PraatGlobals';
+import { IEntries } from './praatGlobals';
 
 export const globalfunctions: IEntries = {
     abs: {
