@@ -1,8 +1,7 @@
 // Diagnostic provider for PraatVSCode
 // Orhun Ulusahin, updated: 31/08/2022
 
-import { close, open } from "fs";
-import { Diagnostic, DiagnosticCollection, languages, Range, Position, Location, ExtensionContext, DiagnosticSeverity, DiagnosticChangeEvent, workspace, DiagnosticRelatedInformation, DiagnosticTag, Uri, TextDocument, TextLine, window } from "vscode";
+import { Diagnostic, DiagnosticCollection, Range, Location, ExtensionContext, DiagnosticSeverity,  workspace, DiagnosticRelatedInformation, TextDocument, TextLine, window, languages } from "vscode";
 
 const selectDiagnostic = ["selectObject", "plusObject", "minusObject"];
 
@@ -76,6 +75,7 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 		praatDiagnostics.set(doc.uri, diagnostics);
 
 	}
+
 }
 
 function createDiagnostic(doc: TextDocument, lineOfText: TextLine, lineIndex: number, markedCode: string, diagnosticText: string, message: string, description: string): Diagnostic {

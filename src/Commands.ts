@@ -2,10 +2,12 @@
 // Orhun Ulusahin
 
 import * as vscode from 'vscode';
+import { DiagnosticCollection } from 'vscode';
 import * as cp from 'child_process';
 import { updatePathIndicator } from './StatusBar';
 import os = require('os');
 import sendArguments from './SendArguments';
+import { refreshDiagnostics } from './Diagnostics';
 
 // Shorthands for OS logicals
 const isWin = os.type() === 'Windows_NT';
@@ -199,30 +201,25 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 							});
 
 							praatShell.stderr?.on('data', function (data) {
+								
 								praatOut.appendLine(data.toString());
 								endTime = Date.now();
 
-								// error parser
 								let errLine = data.split('Script line ')[1].split(' not')[0];
+								let errLineNum = Number(errLine);
 								praatOut.appendLine('Crashed on line ' + errLine + '!');
 
-								let activeEditor = vscode.window.activeTextEditor;
-								let document = activeEditor?.document;
-								let curPos = activeEditor?.selection.active;
-								let direction = "up";
-								let distance = 0;
-								if (curPos?.line) {
-									direction = (curPos?.line+1 > errLine) ? "up" : "down";
-									distance = (curPos?.line+1 > errLine) ? curPos?.line+1-Number(errLine) : curPos?.line+1+Number(errLine);
-								}
-
-								vscode.commands.executeCommand('cursorMove', {
-									to: direction,
-									by: 'line',
-									value: distance
-								});
+								vscode.commands.executeCommand('revealLine', {
+									lineNumber: errLineNum,
+									at: 'center'
+								}).then((revealed) => {
+									vscode.commands.executeCommand('cursorMove', {
+										to: 'viewPortCenter'
+									});	
+								});								
 
 								praatShell.kill();
+
 							});
 
 							praatShell.stdout?.on('resume', function () {

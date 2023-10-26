@@ -14,8 +14,3 @@ interface Praatscription {
 interface PraatscriptionList {
     [index:number]: Praatscription
 }
-
-// List all available prescriptions
-// export const prescriptionList: PraatscriptionList = {
-    
-// };
