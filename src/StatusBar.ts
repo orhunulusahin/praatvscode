@@ -99,7 +99,7 @@ export function updateButtons() {
 
 // Functon to update path indicator based on whether user has provided Praat executable
 export function updatePathIndicator(context: vscode.ExtensionContext) {
-	var praatPath:string = context.globalState.get('praatpath','');
+	var praatPath:string = context.globalState.get('praatPath','');
 	if (praatPath === undefined || praatPath === "") {
 		pathIndicator.text = '$(new-folder) Praat path not set';
 		pathIndicator.tooltip = 'Click to set a path and run scripts';

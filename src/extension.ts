@@ -36,11 +36,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection(updateTracker));
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(updateButtons));
 
-	// Register commands
 	// Defined in Commands.ts
 	registerCommands(context);
 
-	// Test feature
 	// Diagnostics
 	const collection = vscode.languages.createDiagnosticCollection("praatDiagnostics");
 	subscribeToDocumentChanges(context, collection);

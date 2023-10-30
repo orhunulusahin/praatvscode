@@ -7,7 +7,7 @@ import * as cp from 'child_process';
 import { updatePathIndicator } from './StatusBar';
 import os = require('os');
 import sendArguments from './SendArguments';
-import { refreshDiagnostics } from './Diagnostics';
+import { refreshDiagnostics, subscribeToDocumentChanges } from './Diagnostics';
 
 // Shorthands for OS logicals
 const isWin = os.type() === 'Windows_NT';
@@ -38,8 +38,8 @@ function regCmd(context: vscode.ExtensionContext, commandId: string, run: (...ar
 
 export default function registerCommands(context: vscode.ExtensionContext) {
 
-	var praatPath: string = context.globalState.get('praatpath', '');
-	var exePath: string = context.globalState.get('exepath', '');
+	function praatPath(): string { return context.globalState.get('praatPath', ''); };
+	function exePath(): string { return context.globalState.get('exePath', ''); }
 	var praatOut = vscode.window.createOutputChannel("PraatVSCode");
 
 	// Command for defining Praat path
@@ -80,7 +80,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage('Praat on the desktop... you are a true phonetician!');
 		}
 
-		await context.globalState.update('praatpath', promptPath);
+		await context.globalState.update('praatPath', promptPath);
 		await setExePath();
 		updatePathIndicator(context);
 
@@ -88,34 +88,35 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 
 	// For backwards compatibility
 	setExePath();
+	updatePathIndicator(context);
 
 	async function setExePath() {
 		let newExePath = "";
 
 		if (isWin) {
-			newExePath = praatPath + '\\Praat.exe';
+			newExePath = praatPath() + '\\Praat.exe';
 		} else if (isLnx) {
-			newExePath = praatPath + '/praat';
+			newExePath = praatPath() + '/praat';
 		} else if (isMac) {
-			newExePath = praatPath + '/Praat.app/Contents/MacOS/Praat';
+			newExePath = praatPath() + '/Praat.app/Contents/MacOS/Praat';
 		} else {
 			return vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
 		}
-		await context.globalState.update('exepath', newExePath);
+		await context.globalState.update('exePath', newExePath);
 	}
 
 	// Command for calling Praat path
 	regCmd(context, 'praatvscode.getPath', () => {
-		if (praatPath === undefined) {
+		if (praatPath() === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else {
-			vscode.window.showInformationMessage('The current path for the Praat executable is: ' + praatPath);
+			vscode.window.showInformationMessage('The current path for the Praat executable is: ' + praatPath());
 		}
 	});
 
 	// Command for opening a script in Praat
 	regCmd(context, 'praatvscode.openInPraat', () => {
-		if (praatPath === undefined) {
+		if (praatPath() === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
@@ -125,7 +126,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 				vscode.window.activeTextEditor.document.save().then((saved) => {
 
 					if (isWin || isLnx || isMac) {
-						cp.exec(quote(exePath) + ' --open --hide-picture "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
+						cp.exec(quote(exePath()) + ' --open --hide-picture "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 					} else {
 						vscode.window.showInformationMessage('Fatal error! Trouble recognizing OS.');
 					}
@@ -139,7 +140,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 
 	// Command for running a script in Praat
 	regCmd(context, 'praatvscode.runInPraat', () => {
-		if (praatPath === undefined) {
+		if (praatPath() === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
@@ -148,7 +149,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 				vscode.window.activeTextEditor.document.save().then((saved) => {
 					if (vscode.window.activeTextEditor?.document.uri.fsPath) {
 						if (isWin || isLnx || isMac) {
-							cp.exec(quote(exePath) + ' --send --hide-picture "' + vscode.window.activeTextEditor.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
+							cp.exec(quote(exePath()) + ' --send --hide-picture "' + vscode.window.activeTextEditor.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)), (error, stdout, stderr) => {
 								vscode.window.showInformationMessage('Running script in Praat: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 							});
 						} else {
@@ -164,7 +165,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 
 	// Command for running a script in the background
 	regCmd(context, 'praatvscode.runScript', () => {
-		if (praatPath === undefined) {
+		if (praatPath() === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
@@ -184,7 +185,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 
 						let beginTime = Date.now();
 						let endTime = Date.now();
-						const praatShell = cp.exec(quote(exePath) + ' --run -8 "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)));
+						const praatShell = cp.exec(quote(exePath()) + ' --run -8 "' + vscode.window.activeTextEditor?.document.uri.fsPath + '" '.concat(sendArguments(vscode.window.activeTextEditor.document)));
 
 						if (praatShell.pid > 0) {
 
@@ -201,7 +202,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 							});
 
 							praatShell.stderr?.on('data', function (data) {
-								
+
 								praatOut.appendLine(data.toString());
 								endTime = Date.now();
 
@@ -215,8 +216,8 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 								}).then((revealed) => {
 									vscode.commands.executeCommand('cursorMove', {
 										to: 'viewPortCenter'
-									});	
-								});								
+									});
+								});
 
 								praatShell.kill();
 
@@ -243,11 +244,11 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 
 	// Command for getting user's Praat version
 	regCmd(context, 'praatvscode.getPraatVersion', () => {
-		if (praatPath === undefined) {
+		if (praatPath() === undefined) {
 			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
 		} else {
 			if (isWin || isMac || isLnx) {
-				cp.exec(quote(exePath) + ' --version', (error, stdout, stderr) => {
+				cp.exec(quote(exePath()) + ' --version', (error, stdout, stderr) => {
 					if (error) {
 						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
 					} else {
