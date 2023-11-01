@@ -2,30 +2,16 @@
 // Orhun Ulusahin
 
 import * as vscode from 'vscode';
-import { DiagnosticCollection } from 'vscode';
 import * as cp from 'child_process';
 import { updatePathIndicator } from './StatusBar';
 import os = require('os');
 import sendArguments from './SendArguments';
-import { refreshDiagnostics, subscribeToDocumentChanges } from './Diagnostics';
 
 // Shorthands for OS logicals
 const isWin = os.type() === 'Windows_NT';
 const isMac = os.type() === 'Darwin';
 const isLnx = os.type() === 'Linux';
 const osString = os.type();
-
-// Fix for weird unicode characters in terminal output readouts
-const outputReplace: any = /[^a-zA-Z0-9!?.:;-_$\\\t\r\n{} ]/g;
-
-function commandClean(string: string): string {
-	// Escape the escape characters
-	string = string.replace(outputReplace, "");
-	string = string.replace("\\", "\\\\");
-	string = string.replace('"', '\\"');
-	string = string.replace("'", "\\'");
-	return string;
-}
 
 function quote(inputString: string) {
 	return '"' + inputString + '"';
@@ -36,11 +22,34 @@ function regCmd(context: vscode.ExtensionContext, commandId: string, run: (...ar
 	context.subscriptions.push(vscode.commands.registerCommand(commandId, run));
 }
 
+function infoMsg(msg: string) {
+	vscode.window.showInformationMessage(msg);
+}
+function errorMsg(msg: string) {
+	vscode.window.showErrorMessage(msg);
+}
+function osError() {
+	errorMsg('Fatal error: Trouble recognizing OS!');
+}
+function notPraatScript() {
+	errorMsg('You do not have a Praat script opened (or focused) in VSCode!');
+}
+function noPraatPath() {
+	errorMsg('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+}
+
 export default function registerCommands(context: vscode.ExtensionContext) {
 
 	function praatPath(): string { return context.globalState.get('praatPath', ''); };
 	function exePath(): string { return context.globalState.get('exePath', ''); }
 	var praatOut = vscode.window.createOutputChannel("PraatVSCode");
+
+	var vSplit = (<string>context.extension.packageJSON['version']).split('.');
+	const pvscVersion = {
+		major: Number(vSplit[0]),
+		minor: Number(vSplit[1]),
+		patch: Number(vSplit[2])
+	};
 
 	// Command for defining Praat path
 	regCmd(context, 'praatvscode.definePath', async () => {
@@ -57,17 +66,14 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 			title: "Define Path"
 		});
 
-		// If user entered the executable on Windows, remove it
 		if (isWin && promptPath?.trim().toLowerCase().endsWith('praat.exe')) {
 			promptPath = promptPath.trim().slice(0, promptPath.length - 9);
 		}
 
-		// If user entered the app root rather than app folder on Mac, remove it
 		if (isMac && promptPath?.trim().toLowerCase().endsWith('Praat.app')) {
 			promptPath = promptPath.trim().slice(0, promptPath.length - 9);
 		}
 
-		// If the path ends with a slash of either kind, remove it 
 		if (promptPath?.trim().endsWith("/") || promptPath?.trim().endsWith("\\")) {
 			promptPath = promptPath.trim().slice(0, promptPath.length - 1);
 		}
@@ -75,7 +81,6 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 		// Return the "raw" path with no trailing slash (might regret later lol)
 		vscode.window.showInformationMessage('Praat path set as: ' + promptPath);
 
-		// Little easter egg for the true ones
 		if (promptPath?.toLowerCase().endsWith('desktop')) {
 			vscode.window.showInformationMessage('Praat on the desktop... you are a true phonetician!');
 		}
@@ -100,7 +105,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 		} else if (isMac) {
 			newExePath = praatPath() + '/Praat.app/Contents/MacOS/Praat';
 		} else {
-			return vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
+			return osError();
 		}
 		await context.globalState.update('exePath', newExePath);
 	}
@@ -108,7 +113,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 	// Command for calling Praat path
 	regCmd(context, 'praatvscode.getPath', () => {
 		if (praatPath() === undefined) {
-			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+			noPraatPath();
 		} else {
 			vscode.window.showInformationMessage('The current path for the Praat executable is: ' + praatPath());
 		}
@@ -117,7 +122,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 	// Command for opening a script in Praat
 	regCmd(context, 'praatvscode.openInPraat', () => {
 		if (praatPath() === undefined) {
-			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+			noPraatPath();
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
@@ -128,20 +133,25 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 					if (isWin || isLnx || isMac) {
 						cp.exec(quote(exePath()) + ' --open --hide-picture "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 					} else {
-						vscode.window.showInformationMessage('Fatal error! Trouble recognizing OS.');
+						osError();
 					}
 
 				});
 			} else {
-				vscode.window.showErrorMessage('You do not have a Praat script open on VSCode!');
+				notPraatScript();
 			}
 		}
 	});
 
+
+	// regCmd(context, 'praatvscode.showPage', async () => {
+	// 	await vscode.commands.executeCommand('extension.open', 'OrhunUlusahin.praatvscode');
+	// });
+
 	// Command for running a script in Praat
 	regCmd(context, 'praatvscode.runInPraat', () => {
 		if (praatPath() === undefined) {
-			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+			noPraatPath();
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
@@ -153,12 +163,12 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 								vscode.window.showInformationMessage('Running script in Praat: "' + vscode.window.activeTextEditor?.document.uri.fsPath + '"');
 							});
 						} else {
-							vscode.window.showInformationMessage('Fatal error! Trouble recognizing OS.');
+							osError();
 						}
 					}
 				});
 			} else {
-				vscode.window.showErrorMessage('You do not have a Praat script open on VSCode!');
+				notPraatScript();
 			}
 		}
 	});
@@ -166,7 +176,7 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 	// Command for running a script in the background
 	regCmd(context, 'praatvscode.runScript', () => {
 		if (praatPath() === undefined) {
-			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+			noPraatPath();
 		} else if (vscode.window.activeTextEditor?.document.languageId !== "praat") {
 			vscode.window.showErrorMessage('The active selection is not a Praat script!');
 		} else {
@@ -245,18 +255,18 @@ export default function registerCommands(context: vscode.ExtensionContext) {
 	// Command for getting user's Praat version
 	regCmd(context, 'praatvscode.getPraatVersion', () => {
 		if (praatPath() === undefined) {
-			vscode.window.showErrorMessage('You have not set a path for the Praat executable yet. Run the command "Define a path for the Praat executable" to set a path.');
+			noPraatPath();
 		} else {
 			if (isWin || isMac || isLnx) {
 				cp.exec(quote(exePath()) + ' --version', (error, stdout, stderr) => {
 					if (error) {
 						vscode.window.showInformationMessage('Cannot fetch Praat version info.');
 					} else {
-						vscode.window.showInformationMessage('Praat version info: ' + stdout.replace(outputReplace, ""));
+						vscode.window.showInformationMessage('Praat version info: ' + stdout);
 					}
 				});
 			} else {
-				vscode.window.showInformationMessage('Fatal error. Trouble recognizing OS.');
+				osError();
 			}
 		}
 	});

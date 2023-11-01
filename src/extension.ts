@@ -45,7 +45,6 @@ export function activate(context: vscode.ExtensionContext) {
 	if (vscode.window.activeTextEditor) {
 		refreshDiagnostics(vscode.window.activeTextEditor?.document, collection);
 	}
-
 	// Autocompletion
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('praat', new PraatCompletionItemProvider(), '>', '$'));
 	// Hover info

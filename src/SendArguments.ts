@@ -63,8 +63,6 @@ export default function sendArguments(document: TextDocument): string {
             //     args.push(formTitle);
             // }
 
-            console.log('form begin')
-
             for (let j = i+1; j < endOfForm(document,i); j++) {
 
                 let formLine = document.lineAt(j);
@@ -75,8 +73,6 @@ export default function sendArguments(document: TextDocument): string {
 
                 if (hasFormInputNew || hasFormInputOld) {
 
-                    console.log('found on line '+ document.lineAt(j).lineNumber)
-
                     let argRange:Range|undefined;
                     let argValue = '';
 
@@ -85,7 +81,6 @@ export default function sendArguments(document: TextDocument): string {
                     // AS STRINGS, QUOTED, AND AS VALUES RATHER THAN KEYS
                     // Solution:
                     if ((formLineText).trimStart().startsWith("optionmenu") || (formLineText).trimStart().startsWith("choice")) {
-                        console.log('choice start: ' + formLineText.split(':')[1])
                         let optionList:string[] = [];
                         for (let k = j+1; k < endOfOptionmenu(document,j); k++) {
                             let optLine = document.lineAt(k).text;
@@ -94,18 +89,14 @@ export default function sendArguments(document: TextDocument): string {
                             let optValue = optLine.trim().substring(trimValue).trim();
                             if (hasFormInputNew) { optValue = unquote(optValue); }
                             optionList.push(optValue);
-                            console.log(optionList);
                         }
                         // Select whatever option would be selected by Praat optionmenu number
                         let argIndex = formLineText.split(',')[1].trim();
                         // Adjust index by -1: Praat counts from 1!'
                         argValue = optionList[Number(argIndex)-1];
                         args.push(argValue);
-                        console.log('choice val: ' + argValue);
 
                     } else if(hasFormInputNew) {
-
-                        console.log('new input begin')
 
                         let firstColonIndex = formLineText.indexOf(':');
                         let firstSplit = formLineText.substring(firstColonIndex+1).trim();
@@ -114,7 +105,6 @@ export default function sendArguments(document: TextDocument): string {
 
                         // There may be multiple arguments
                         if (firstSplit.includes(',')) {
-                            console.log(firstSplit.split(','))
                             // The first is the variable name, and shouldn't be sent as argument!
                             let split = firstSplit.split(',');
 
@@ -126,10 +116,7 @@ export default function sendArguments(document: TextDocument): string {
                         } else {
                             args.push(unquote(firstSplit));
                         }
-
-                        console.log('new input end')
-
-                        
+                       
                     } else if (hasFormInputOld) {
 
                         // Get the second word after the form input keyword
@@ -147,10 +134,8 @@ export default function sendArguments(document: TextDocument): string {
 
                     }
 
-                    console.log(args)
                 }
                 if (formLineText.includes("endform")) {
-                    console.log('form end')
                     break;
                 }
             }
