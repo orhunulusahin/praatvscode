@@ -11,25 +11,29 @@ All notable changes to the PraatVSCode extension will be documented in this file
 
 ## Known Issues
 
-- Praat path-finding and script execution can be erratic on Unix-like platforms (i.e., Mac and Linux).
+- Praat path-finding and script execution can be erratic Mac and Linux.
 - Control keyword pairs don't check across categories. Thus, if an embedded control keyword is terminated outside the space defined by its containing keyword pair, a diagnostic is not generated. For instance, `for` followed by `if` followed by `endfor` followed by `endif` should generate an error, but is not reported.
-- Form arguments are only correctly selected and sent to Praat when using the "old" (i.e., "..." operator) syntax. Support for the new syntax will be added shortly.
+- Similarly, `fi` is not yet registered as a valid closing tag for `if`.
 
-## [0.11] Backend Optimization and Better Support for the New (:) Syntax
+## [0.11.0] Backend Optimization and Better Support for the "New" (:) Syntax
+
+    ⚠️ An update to v0.11.0 will likely reset your Praat executable path! ⚠️
 
 ### Added
 
 - **Active Praat output stream.** The extension now directly streams Praat output to its internal output window as opposed to waiting for the script to finish running and dumping the complete output. It also reports script runtime and more clearly highlights the boundaries of script outputs.
+- The extension now jumps to the line that caused a crash/error in Praat if the Praat shell streams an error.
 - Opening or running scripts in the Praat GUI now hides the picture window by default.
 - OS-specific placeholders for the praat path declaration input.
 
 ### Changed
 
-- The script execution mechanism is being overhauled. This means:
+- The script execution mechanism has been overhauled. This means:
   - Better performance across different operating systems.
   - Cleaner indexing and expandability for code contribution and future optimization.
   - Reduced memory and processing load. This is unlikely to effect script runtimes on more modern machines, but will lead to noticeable changes on older hardware.
   - Even faster background processing compared to the Praat GUI.
+- A greedy regular expression for capturing comments was fixed. This particularly caused problems for vector syntax ('...$#').
 
 ## [0.10.5] Diagnostic Bugfix
 

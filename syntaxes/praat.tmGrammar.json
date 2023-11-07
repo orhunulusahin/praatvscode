@@ -183,7 +183,7 @@
       }
     },
     "comments": {
-      "begin": "#|;",
+      "begin": "(^|\\s|\\t|\\b)(#|;)",
       "end": "$",
       "beginCaptures": {
         "0": {
