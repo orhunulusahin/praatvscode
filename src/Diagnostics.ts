@@ -37,18 +37,21 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			['if', 'endif'],
 			['while', 'endwhile'],
 			['loop', 'until'],
-			['proc', 'endproc']
+			['procedure', 'endproc'],
+			['editor','endeditor']
 		];
 
 		function detectUnclosedTags(startline: number = 0, pair: string[]) {
 			let openers: number[] = [];
 			let closers: number[] = [];
 			for (let lineIndex = startline; lineIndex < doc.lineCount; lineIndex++) {
-				let thisLine = doc.lineAt(lineIndex);
-				if (thisLine.text.trim().startsWith(pair[0])) {
+				let thisText = doc.lineAt(lineIndex).text.trim();
+				let openExp = new RegExp('^'+pair[0]+'(\\s)', 'g');
+				let closeExp = new RegExp('^'+pair[1]+'(\\s|\\b|\\$)', 'g');
+				if (thisText.match(openExp)) {
 					openers.push(lineIndex);
 				}
-				if (thisLine.text.trim().startsWith(pair[1])) {
+				if (thisText.match(closeExp)) {
 					closers.push(lineIndex);
 				}
 			}
