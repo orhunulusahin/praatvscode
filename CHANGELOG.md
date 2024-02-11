@@ -15,6 +15,16 @@ All notable changes to the PraatVSCode extension will be documented in this file
 - Control keyword pairs don't check across categories. Thus, if an embedded control keyword is terminated outside the space defined by its containing keyword pair, a diagnostic is not generated. For instance, `for` followed by `if` followed by `endfor` followed by `endif` should generate an error, but is not reported.
 - Similarly, `fi` is not yet registered as a valid closing tag for `if`.
 
+## [0.11.1] Tag Pair Fixes
+
+### Added
+
+- The tag pair `editor`-`endeditor` now recognized as control keywords.
+
+### Changed
+
+- Tag pair detection now relies on regular expressions instead of (quicker but) less reliable checks through `startsWith` TS string method.
+
 ## [0.11.0] Backend Optimization and Better Support for the "New" (:) Syntax
 
     ⚠️ An update to v0.11.0 will likely reset your Praat executable path! ⚠️
