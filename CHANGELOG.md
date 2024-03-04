@@ -15,6 +15,10 @@ All notable changes to the PraatVSCode extension will be documented in this file
 - Control keyword pairs don't check across categories. Thus, if an embedded control keyword is terminated outside the space defined by its containing keyword pair, a diagnostic is not generated. For instance, `for` followed by `if` followed by `endfor` followed by `endif` should generate an error, but is not reported.
 - Similarly, `fi` is not yet registered as a valid closing tag for `if`.
 
+## [0.11.2] Tag Pair Fixes
+
+- The regex used to detect control tags now matches tags immediately followed by operators `:` or `...`.
+
 ## [0.11.1] Tag Pair Fixes
 
 ### Added
