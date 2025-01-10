@@ -53,6 +53,9 @@
 				"configuration": "./praat-language-configuration.json"
 			},
 			{
+                		"id": "praat-markdown-injection"
+            		}
+			{
 				"id": "textgrid",
 				"icon": {
 					"light": "./images/praat_32x32.png",
@@ -80,6 +83,17 @@
 				"language": "textgrid",
 				"scopeName": "source.textgrid",
 				"path": "./syntaxes/textgrid.tmGrammar.json"
+			},
+			{
+			"language": "praat-markdown-injection",
+			"scopeName": "markdown.praat.codeblock",
+			"path": "./syntaxes/praat-markdown-injection.json",
+			"injectTo": [
+				"text.html.markdown"
+			],
+			"embeddedLanguages": {
+				"meta.embedded.block.praat": "praat"
+			}
 			}
 		],
 		"commands": [
