@@ -15,6 +15,15 @@ All notable changes to the PraatVSCode extension will be documented in this file
 - Control keyword pairs don't check across categories. Thus, if an embedded control keyword is terminated outside the space defined by its containing keyword pair, a diagnostic is not generated. For instance, `for` followed by `if` followed by `endfor` followed by `endif` should generate an error, but is not reported.
 - Similarly, `fi` is not yet registered as a valid closing tag for `if`.
 
+## [0.11.3] Minor Fixes and Refactoring
+
+### Changed
+
+- String variable definition and selection diagnostics now ignore lines that are comments.
+- `fi` no longer decreases indent automatically (considering it's mostly written inline).
+- `loop-until` corrected to `repeat-until` in diagnostics.
+- `repeat-until` loops now correctly detect initiators (i.e., `repeat`) with no following text or comment on the same line.
+
 ## [0.11.2] Tag Pair Fixes
 
 - The regex used to detect control tags now matches tags immediately followed by operators `:` or `...`.

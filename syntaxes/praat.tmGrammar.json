@@ -381,7 +381,7 @@
       "name": "support.function.string.praat"
     },
     "file-function": {
-      "match": "(\\s)*?\\b(fileReadable|readFile(\\$)?|createFolder|deleteFile|fileNames\\$\\#)(\\b|\\s)",
+      "match": "(\\s)*?\\b(fileReadable|readFile(\\$)?|create(Folder|Directory)|deleteFile|fileNames\\$\\#)(\\b|\\s)",
       "name": "support.function.string.praat"
     },
     "sound-save-function": {
@@ -462,7 +462,7 @@
       ]
     },
     "new-menu-function": {
-      "match": "(\\s)*?\\b(Record (mono|stereo) Sound|Create (Sound (from formula|as (pure tone|tone complex|gammatone|Shepard tone)|from VowelEditor)|(simple )?Matrix( from values)?|(simple )? Photo|Table with(out)? column names|simple (Confusion|Covariance|Correlation)|empty EditCostsTable|empty PointProcess|Poisson process|(Pitch|Intensity|Duration|Amplitude|Real)Tier|FormantGrid|TextGrid|Corpus|Strings (as file list|as folder list|from tokens)|Articulation|Speaker|Artword|Vocal Tract from phone|Permutation|SpeechSynthesizer))\\b",
+      "match": "(\\s)*?\\b(Record (mono|stereo) Sound|Create (Sound (from formula|as (pure tone|tone complex|gammatone|Shepard tone)|from VowelEditor)|(simple )?Matrix( from values)?|(simple )? Photo|Table with(out)? column names|simple (Confusion|Covariance|Correlation)|empty EditCostsTable|empty PointProcess|Poisson process|(Pitch|Intensity|Duration|Amplitude|Real)Tier|FormantGrid|TextGrid|Corpus|Strings (as file list|as folder list|as directory list|from tokens)|Articulation|Speaker|Artword|Vocal Tract from phone|Permutation|SpeechSynthesizer))\\b",
       "name": "support.function.praat"
     },
     "open-menu-function": {

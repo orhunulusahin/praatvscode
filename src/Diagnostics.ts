@@ -2,6 +2,7 @@
 // Orhun Ulusahin, updated: 31/08/2022
 
 import { Diagnostic, DiagnosticCollection, Range, Location, ExtensionContext, DiagnosticSeverity,  workspace, DiagnosticRelatedInformation, TextDocument, TextLine, window, languages } from "vscode";
+import { isComment } from "./SemanticTokensProvider";
 
 const selectDiagnostic = ["selectObject", "plusObject", "minusObject"];
 
@@ -14,7 +15,7 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 
 			// Selection diagnostics
 			selectDiagnostic.forEach(selectword => {
-				if (lineOfText.text.includes(selectword)) {
+				if (lineOfText.text.includes(selectword) && !isComment(lineOfText.text)) {
 					if (!lineOfText.text.includes(':') || lineOfText.text.endsWith(":")) {
 						diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, selectword + " syntax error", selectword, selectword + " syntax error `", selectword + "` must take string or variable (object) as input and ':' as operator"));
 					} else if (lineOfText.text.includes('"') && (lineOfText.text.indexOf('"') === lineOfText.text.lastIndexOf('"'))) {
@@ -25,7 +26,7 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 
 			// Trying to define a string variable without "$"
 			const stringDefRegex = /([a-z_.\x7f-\xff][a-zA-Z0-9_'\x7f-\xff]*)(\s*)\=(\s*)\"(.*)\"/g;
-			if (lineOfText.text.match(stringDefRegex) && !lineOfText.text.includes("$")) {
+			if (lineOfText.text.match(stringDefRegex) && !lineOfText.text.endsWith("$") && !isComment(lineOfText.text)) {
 				let varName = lineOfText.text.split("=")[0].trim();
 				diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, varName, varName, "String variable syntax error", "String variable names must end with the character \"$\""));
 			}
@@ -36,7 +37,7 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			['for', 'endfor'],
 			['if', 'endif'],
 			['while', 'endwhile'],
-			['loop', 'until'],
+			['repeat', 'until'],
 			['procedure', 'endproc'],
 			['editor','endeditor']
 		];
@@ -46,12 +47,12 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			let closers: number[] = [];
 			for (let lineIndex = startline; lineIndex < doc.lineCount; lineIndex++) {
 				let thisText = doc.lineAt(lineIndex).text.trim();
-				let openExp = new RegExp('^'+pair[0]+'(\\s|[:]|\\.\\.\\.)', 'g');
+				let openExp = new RegExp('^'+pair[0]+'(\\s|\\b|[:]|\\.\\.\\.)', 'g');
 				let closeExp = new RegExp('^'+pair[1]+'(\\s|\\b|\\$)', 'g');
-				if (thisText.match(openExp)) {
+				if (thisText.match(openExp) && !isComment(thisText)) {
 					openers.push(lineIndex);
 				}
-				if (thisText.match(closeExp)) {
+				if (thisText.match(closeExp) && !isComment(thisText)) {
 					closers.push(lineIndex);
 				}
 			}
