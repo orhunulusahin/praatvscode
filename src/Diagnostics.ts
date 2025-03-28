@@ -46,7 +46,7 @@ export function refreshDiagnostics(doc: TextDocument, praatDiagnostics: Diagnost
 			let closers: number[] = [];
 			for (let lineIndex = startline; lineIndex < doc.lineCount; lineIndex++) {
 				let thisText = doc.lineAt(lineIndex).text.trim();
-				let openExp = new RegExp('^'+pair[0]+'(\\s)', 'g');
+				let openExp = new RegExp('^'+pair[0]+'(\\s|[:]|\\.\\.\\.)', 'g');
 				let closeExp = new RegExp('^'+pair[1]+'(\\s|\\b|\\$)', 'g');
 				if (thisText.match(openExp)) {
 					openers.push(lineIndex);
